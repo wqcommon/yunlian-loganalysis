@@ -21,10 +21,6 @@ public class ApiResponse<T> implements Serializable{
     private T data;
 
 
-    private ApiResponse(){
-
-    }
-
     private ApiResponse(int code,String  msg,T data){
         this.code = code;
         this.msg = msg;
