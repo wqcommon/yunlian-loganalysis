@@ -5,12 +5,14 @@ import com.yunlian.apimonitor.response.ApiResponse;
 import com.yunlian.apimonitor.response.vo.StatCallApiVo;
 import com.yunlian.apimonitor.response.vo.StatCallDailyApiVo;
 import com.yunlian.apimonitor.response.vo.StatCallDailyVo;
+import com.yunlian.apimonitor.response.vo.StatCallPartnerDailyApiVo;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author qiang.wen
@@ -79,8 +81,8 @@ public class ApiStatController {
                                          @RequestParam(value = "appCode",required = false) String appCode,
                                          @RequestParam(value = "sortedField",required = false) String sortedField,
                                          @RequestParam(value = "sortedDirection",required = false) Integer direction){
-        Object ret = StatCallDataProvider.assemStatCallPartnerDailyApiVos(appCode);
-        ApiResponse<Object> response = ApiResponse.OK(ret);
+        Map<String,List<StatCallPartnerDailyApiVo>> ret = StatCallDataProvider.assemStatCallPartnerDailyApiVos(appCode);
+        ApiResponse<Map<String,List<StatCallPartnerDailyApiVo>>> response = ApiResponse.OK(ret);
         return response;
     }
 }

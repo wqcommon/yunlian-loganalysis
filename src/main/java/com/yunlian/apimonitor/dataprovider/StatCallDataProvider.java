@@ -100,17 +100,17 @@ public class StatCallDataProvider {
      * @param appCode
      * @return
      */
-    public static Object assemStatCallPartnerDailyApiVos(String appCode) {
+    public static Map<String,List<StatCallPartnerDailyApiVo>> assemStatCallPartnerDailyApiVos(String appCode) {
 
+        Map<String,List<StatCallPartnerDailyApiVo>> retMap = new HashMap<>();
         if(StringUtils.isEmpty(appCode)){
-            Map<String,List<StatCallPartnerDailyApiVo>> retMap = new HashMap<>();
             for(AppCode code : AppCode.values()){
                 retMap.put(code.getAppCode(),genStatCallPartnerDailyApiList(code.getAppCode()));
             }
-            return retMap;
         }else{
-            return genStatCallPartnerDailyApiList(appCode);
+            retMap.put(appCode,genStatCallPartnerDailyApiList(appCode));
         }
+        return retMap;
 
     }
 
