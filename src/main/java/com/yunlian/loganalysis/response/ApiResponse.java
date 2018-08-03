@@ -1,6 +1,6 @@
-package com.yunlian.apimonitor.response;
+package com.yunlian.loganalysis.response;
 
-import com.yunlian.apimonitor.enums.ErrorMsg;
+import com.yunlian.loganalysis.enums.ErrorMsg;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package com.yunlian.apimonitor.enums;
+package com.yunlian.loganalysis.enums;
 
 /**
  * @author qiang.wen
