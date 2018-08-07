@@ -4,8 +4,8 @@
 <configuration>
     <!--设置上下文名称,每个logger都关联到logger上下文，默认上下文名称为default-->
     <contextName>apimonitor</contextName>
-    <property name="logDir" value="/home/centos/logs/apimonitor"/>
-    <property name="backupDir" value="/home/centos/logs/apimonitor/backup"/>
+    <property name="logDir" value="/home/centos/logs/loganalysis"/>
+    <property name="backupDir" value="/home/centos/logs/loganalysis/backup"/>
     <!--控制台-->
     <appender name="stdoutAppender" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -57,11 +57,6 @@
         <appender-ref ref="errorAppender" />
         <appender-ref ref="stdoutAppender" />
     </root>
-
-    <!--分spring profile(环境进行配置)-->
-    <!--<springProfile name="dev">-->
-        <!--<logger></logger>-->
-    <!--</springProfile>-->
 
 </configuration>
 

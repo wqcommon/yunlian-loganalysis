@@ -8,32 +8,74 @@
     <artifactId>yunlian-loganalysis</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.0.RELEASE</version>
-    </parent>
-
 
     <!-- 设定主仓库，按设定顺序进行查找。 -->
-    <repositories>
+    <!--<repositories>-->
 
-        <repository>
-            <id>releases</id>
-            <name>Nexus Repository</name>
-            <url>http://1.203.115.214:8881/nexus/content/repositories/releases</url>
-        </repository>
-        <repository>
-            <id>snapshots</id>
-            <name>Nexus Snapshots</name>
-            <url>http://1.203.115.214:8881/nexus/content/repositories/snapshots</url>
-        </repository>
-    </repositories>
+        <!--<repository>-->
+            <!--<id>releases</id>-->
+            <!--<name>Nexus Repository</name>-->
+            <!--<url>http://1.203.115.214:8881/nexus/content/repositories/releases</url>-->
+        <!--</repository>-->
+        <!--<repository>-->
+            <!--<id>snapshots</id>-->
+            <!--<name>Nexus Snapshots</name>-->
+            <!--<url>http://1.203.115.214:8881/nexus/content/repositories/snapshots</url>-->
+        <!--</repository>-->
+    <!--</repositories>-->
 
     <dependencies>
+
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>org.apache.storm</groupId>
+            <artifactId>storm-core</artifactId>
+            <version>1.2.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-slf4j-impl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-1.2-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-web</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>ring-cors</artifactId>
+                    <groupId>ring-cors</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.storm</groupId>
+            <artifactId>storm-kafka</artifactId>
+            <version>1.2.2</version>
         </dependency>
 
         <dependency>
@@ -42,34 +84,51 @@
             <version>1.2.38</version>
         </dependency>
 
-        <!--test-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.4.5</version>
         </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.45</version>
+        </dependency>
+
+
     </dependencies>
 
 
     <!-- 设定插件仓库 -->
-    <pluginRepositories>
-        <pluginRepository>
-            <id>releases</id>
-            <name>Nexus Repository</name>
-            <url>http://1.203.115.214:8881/nexus/content/repositories/releases</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>snapshots</id>
-            <name>Nexus Snapshots</name>
-            <url>http://1.203.115.214:8881/nexus/content/repositories/snapshots</url>
-        </pluginRepository>
-    </pluginRepositories>
+    <!--<pluginRepositories>-->
+        <!--<pluginRepository>-->
+            <!--<id>releases</id>-->
+            <!--<name>Nexus Repository</name>-->
+            <!--<url>http://1.203.115.214:8881/nexus/content/repositories/releases</url>-->
+        <!--</pluginRepository>-->
+        <!--<pluginRepository>-->
+            <!--<id>snapshots</id>-->
+            <!--<name>Nexus Snapshots</name>-->
+            <!--<url>http://1.203.115.214:8881/nexus/content/repositories/snapshots</url>-->
+        <!--</pluginRepository>-->
+    <!--</pluginRepositories>-->
 
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.yunlian.loganalysis.topology.LogAnalysisTopology</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <version>3.0.0</version>
             </plugin>
         </plugins>
     </build>
