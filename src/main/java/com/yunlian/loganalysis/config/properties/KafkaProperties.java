@@ -18,6 +18,10 @@ public class KafkaProperties {
 
     private String groupId;
 
+    private int maxPollRecords;
+
+    private String consumerTopics;
+
     public String getBootstrapServers() {
         return bootstrapServers;
     }
@@ -64,5 +68,21 @@ public class KafkaProperties {
 
     public void setGroupId(String groupId) {
         this.groupId = groupId;
+    }
+
+    public int getMaxPollRecords() {
+        return maxPollRecords;
+    }
+
+    public void setMaxPollRecords(int maxPollRecords) {
+        this.maxPollRecords = maxPollRecords;
+    }
+
+    public String getConsumerTopics() {
+        return consumerTopics;
+    }
+
+    public void setConsumerTopics(String consumerTopics) {
+        this.consumerTopics = consumerTopics;
     }
 }

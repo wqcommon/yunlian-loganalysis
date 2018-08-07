@@ -32,6 +32,8 @@ public class ConfigPropertiesFactory {
         private static final String KEY_KAFKA_AUTO_COMMIT_INTERVAL_MS = "kafka.auto.commit.interval.ms";
         private static final String KEY_KAFKA_KEY_DESERIALIZER = "kafka.key.deserializer";
         private static final String KEY_KAFKA_VALUE_DESERIALIZER = "kafka.value.deserializer";
+        private static final String KEY_KAFKA_MAX_POLL_RECORDS = "kafka.max.poll.records";
+        private static final String KEY_KAFKA_CONSUMER_TOPICS = "kafka.consumer.topics";
 
 
     }
@@ -69,6 +71,8 @@ public class ConfigPropertiesFactory {
         kafkaProperties.setGroupId(configProperties.getProperty(ConfigKey.KEY_KAFKA_GROUP_ID));
         kafkaProperties.setKeyDeserializer(configProperties.getProperty(ConfigKey.KEY_KAFKA_KEY_DESERIALIZER));
         kafkaProperties.setValueDeserializer(configProperties.getProperty(ConfigKey.KEY_KAFKA_VALUE_DESERIALIZER));
+        kafkaProperties.setMaxPollRecords(Integer.parseInt(configProperties.getProperty(ConfigKey.KEY_KAFKA_MAX_POLL_RECORDS,"100")));
+        kafkaProperties.setConsumerTopics(configProperties.getProperty(ConfigKey.KEY_KAFKA_CONSUMER_TOPICS));
         return kafkaProperties;
     }
 }

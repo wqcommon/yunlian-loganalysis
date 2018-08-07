@@ -1,8 +1,6 @@
 package com.yunlian.loganalysis.topology;
 
-import com.yunlian.loganalysis.config.KafkaConfig;
 import com.yunlian.loganalysis.config.properties.ConfigPropertiesFactory;
-import com.yunlian.loganalysis.config.properties.KafkaProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +21,9 @@ public class LogAnalysisTopology {
         }
         //加载配置文件
         ConfigPropertiesFactory.loadProperties(args[0]);
+
+        //定义topology以及提交topology
+
 
 
 
