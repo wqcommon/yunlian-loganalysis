@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author qiang.wen
@@ -37,6 +39,8 @@ public class KafkaDataSpout extends BaseRichSpout{
     private SpoutOutputCollector spoutOutputCollector;
 
     private KafkaConsumer<String,String> kafkaConsumer;
+
+    private Lock lock = new ReentrantLock();
 
 
     @Override
@@ -91,10 +95,19 @@ public class KafkaDataSpout extends BaseRichSpout{
      * 初始化kafka
      */
     private void initKafka() {
-        KafkaProperties kafkaProperties = ConfigPropertiesFactory.loadKafkaProperties();
-        kafkaConsumer = KafkaConfig.initKafkaConsumer(kafkaProperties);
-        //订阅topic
-        String consumerTopics = kafkaProperties.getConsumerTopics();
-        kafkaConsumer.subscribe(Arrays.asList(consumerTopics.split(",")));
+        lock.lock();
+        try{
+            if(Objects.nonNull(kafkaConsumer)){
+                return;
+            }
+            KafkaProperties kafkaProperties = ConfigPropertiesFactory.loadKafkaProperties();
+            kafkaConsumer = KafkaConfig.initKafkaConsumer(kafkaProperties);
+            //订阅topic
+            String consumerTopics = kafkaProperties.getConsumerTopics();
+            kafkaConsumer.subscribe(Arrays.asList(consumerTopics.split(",")));
+        }finally {
+            lock.unlock();
+        }
+
     }
 }
