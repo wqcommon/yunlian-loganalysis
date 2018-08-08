@@ -1,8 +1,9 @@
 package com.yunlian.loganalysis.datasource;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.yunlian.loganalysis.config.properties.ConfigPropertiesFactory;
 import org.apache.ibatis.datasource.DataSourceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -13,21 +14,31 @@ import java.util.Properties;
  */
 public class DruidDataSourceFacotry implements DataSourceFactory{
 
-    private Properties dbProperties;
+    private static final Logger log = LoggerFactory.getLogger(DruidDataSourceFacotry.class);
+
+    private Properties properties;
 
     @Override
     public void setProperties(Properties properties) {
-        this.dbProperties = properties;
+        //该properties的key与mybatis-config.xml中<dataSource>中的property的name对应
+        this.properties = properties;
     }
 
+    private class DBKey{
+
+        private static final String KEY_DRIVERCLASSNAME = "driverClass";
+        private static final String KEY_URL = "url";
+        private static final String KEY_USERNAME = "username";
+        private static final String KEY_PASSWORD = "password";
+    }
 
     @Override
     public DataSource getDataSource() {
         DruidDataSource dataSource = new DruidDataSource();
-        dataSource.setDriverClassName(dbProperties.getProperty(ConfigPropertiesFactory.ConfigKey.KEY_DB_DRIVERCLASSNAME));
-        dataSource.setUrl(dbProperties.getProperty(ConfigPropertiesFactory.ConfigKey.KEY_DB_URL));
-        dataSource.setUsername(dbProperties.getProperty(ConfigPropertiesFactory.ConfigKey.KEY_DB_USERNAME));
-        dataSource.setPassword(dbProperties.getProperty(ConfigPropertiesFactory.ConfigKey.KEY_DB_PASSWORD));
+        dataSource.setDriverClassName(properties.getProperty(DBKey.KEY_DRIVERCLASSNAME));
+        dataSource.setUrl(properties.getProperty(DBKey.KEY_URL));
+        dataSource.setUsername(properties.getProperty(DBKey.KEY_USERNAME));
+        dataSource.setPassword(properties.getProperty(DBKey.KEY_PASSWORD));
         //TODO 设置一些配置参数
         return dataSource;
     }

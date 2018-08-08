@@ -19,7 +19,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author qiang.wen
  * @date 2018/8/7 11:19
  *
- * 数据库相关操作
+ * 数据库config
  */
 public class DbConfig {
 
@@ -56,11 +56,11 @@ public class DbConfig {
      * 获取sqlSession
      * @return
      */
-    public static SqlSession openSqlSession(){
+    public static SqlSession openSqlSession(boolean autoCommit){
         if(Objects.isNull(sqlSessionFactory)){
             initSqlSessionFacotry();
         }
-        return sqlSessionFactory.openSession();
+        return sqlSessionFactory.openSession(autoCommit);
     }
 
 

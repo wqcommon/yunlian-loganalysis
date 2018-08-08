@@ -20,6 +20,7 @@
     </environments>
 
     <mappers>
-        <mapper resource="mappers/xxxx.xml"/>
+        <mapper resource="mappers/TbTestMapper.xml"/>
+        <mapper resource="mappers/TbDemoMapper.xml"/>
     </mappers>
 </configuration>
