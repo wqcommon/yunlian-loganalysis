@@ -62,12 +62,12 @@ public class StatCallApiPo {
         this.successCallnum = successCallnum;
     }
 
-    public long getFailureCallnum() {
-        return failureCallnum;
-    }
-
     public void setFailureCallnum(long failureCallnum) {
         this.failureCallnum = failureCallnum;
+    }
+
+    public long getFailureCallnum() {
+        return failureCallnum;
     }
 
     public LocalDateTime getCreateTime() {

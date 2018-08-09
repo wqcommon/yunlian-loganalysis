@@ -50,12 +50,13 @@ public class MysqlDataBolt extends BaseRichBolt{
             }catch (Exception e){
                 log.error("日志统计数据入库失败：e:{}",e);
             }
+
         }
         outputCollector.ack(tuple);
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-
+        //此处不需要继续往下发送数据了
     }
 }

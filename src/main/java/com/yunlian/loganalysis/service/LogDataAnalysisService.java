@@ -1,6 +1,9 @@
 package com.yunlian.loganalysis.service;
 
+import com.yunlian.loganalysis.convertor.LogDataConvertor;
 import com.yunlian.loganalysis.dto.StatOriginLogDataDto;
+import com.yunlian.loganalysis.po.*;
+import org.apache.storm.shade.org.apache.commons.collections.CollectionUtils;
 
 import java.util.List; /**
  * @author qiang.wen
@@ -24,7 +27,20 @@ public class LogDataAnalysisService {
      * @param logDataDtos
      */
     public void statLogData(List<StatOriginLogDataDto> logDataDtos) {
-
+        if(CollectionUtils.isEmpty(logDataDtos)){
+            return;
+        }
+        /**数据转换*/
+        //转换为StatOriginLogDataPo
+        List<StatOriginLogDataPo> originLogDataPos = LogDataConvertor.convertToStatOriginLogDataPos(logDataDtos);
+        //转换为StatCallApiPo
+        List<StatCallApiPo> statCallApiPos = LogDataConvertor.convertToStatCallApiPos(logDataDtos);
+        //转换为StatCallDailyPo
+        List<StatCallDailyPo> statCallDailyPos = LogDataConvertor.convertToStatCallDailyPos(logDataDtos);
+        //转换为StatCallDailyApiPo
+        List<StatCallDailyApiPo> statCallDailyApiPos = LogDataConvertor.convertToStatCallDailyApiPos(logDataDtos);
+        //转换为StatCallPartnerDailyApiPo
+        List<StatCallPartnerDailyApiPo> statCallPartnerDailyApiPos = LogDataConvertor.converttoStatCallPartnerDailyApiPos(logDataDtos);
 
     }
 }

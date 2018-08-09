@@ -1,11 +1,15 @@
 package com.yunlian.loganalysis.convertor;
 
 import com.yunlian.loganalysis.dto.StatOriginLogDataDto;
+import com.yunlian.loganalysis.po.*;
+import com.yunlian.loganalysis.util.GlobalIdGenerator;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author qiang.wen
@@ -21,6 +25,9 @@ public class LogDataConvertor {
 
     private static final int array_length = 15;
 
+    private static final String http_protol = "HTTP/1.1";
+
+    private static final String api_url_format = "%s%s%s";
 
 
     /**
@@ -72,9 +79,116 @@ public class LogDataConvertor {
         return null;
     }
 
-    public static void main(String[] args) {
 
-        String str = "[aaaaa][bbbbb][ccccc][dddddd][vvvvvv][xxxxxx]";
-        System.out.println(Arrays.asList(str.split(splitReg)));
+    /**
+     * 把StatOriginLogDataDto集合转换为StatOriginLogDataPo集合
+     * @param logDataDtos
+     * @return
+     */
+    public static List<StatOriginLogDataPo> convertToStatOriginLogDataPos(List<StatOriginLogDataDto> logDataDtos) {
+        List<StatOriginLogDataPo> logDataPos = new ArrayList<>();
+        GlobalIdGenerator idGenerator = GlobalIdGenerator.getInstance();
+        logDataDtos.forEach(dataDto -> {
+            StatOriginLogDataPo po = new StatOriginLogDataPo();
+            //这里生成了uid
+            po.setUid(String.valueOf(idGenerator.nextId()));
+            Integer bodyByteSent = StringUtils.isBlank(dataDto.getBodyBytesSent())?0:Integer.valueOf(dataDto.getBodyBytesSent());
+            po.setBodyBytesSent(bodyByteSent);
+            po.setHttpAppCode(dataDto.getHttpAppCode());
+            po.setHttpHost(dataDto.getHttpHost());
+            po.setHttpReferer(dataDto.getHttpReferer());
+            po.setHttpToken(dataDto.getHttpToken());
+            po.setHttpUserAgent(dataDto.getHttpUserAgent());
+            po.setRemoteAddr(dataDto.getRemoteAddr());
+            po.setRemoteUser(dataDto.getRemoteUser());
+            po.setRequest(dataDto.getRequest());
+            Integer requestLength = StringUtils.isBlank(dataDto.getRequestLength())?0:Integer.valueOf(dataDto.getRequestLength());
+            po.setRequestLength(requestLength);
+            po.setRequestTime(dataDto.getRequestTime());
+            Integer status = StringUtils.isBlank(dataDto.getStatus())?null:Integer.valueOf(dataDto.getStatus());
+            po.setStatus(status);
+            po.setTimeLocal(dataDto.getTimeLocal());
+            po.setUpstreamAddr(dataDto.getUpstreamAddr());
+            po.setUpstreamResponseTime(dataDto.getUpstreamResponseTime());
+            logDataPos.add(po);
+        });
+        return logDataPos;
+    }
+
+
+    /**
+     * 把StatOriginLogDataDto集合转换为StatCallApiPo集合
+     * @param logDataDtos
+     * @return
+     */
+    public static List<StatCallApiPo> convertToStatCallApiPos(List<StatOriginLogDataDto> logDataDtos) {
+        //不生成uid
+        List<StatCallApiPo> statCallApiPos = new ArrayList<>();
+        logDataDtos.forEach(dto -> {
+            StatCallApiPo po = new StatCallApiPo();
+            po.setApiUrl(resolveUrl(dto.getRequest(),dto.getHttpHost()));
+            po.setTotalCallnum(1);
+            if(isSuccessed(dto.getStatus())){
+                po.setSuccessCallnum(1);
+            }else {
+                po.setFailureCallnum(1);
+            }
+            statCallApiPos.add(po);
+        });
+        return statCallApiPos;
+    }
+
+    /**
+     * 把StatOriginLogDataDto集合转换为StatCallDailyPo集合
+     * @param logDataDtos
+     * @return
+     */
+    public static List<StatCallDailyPo> convertToStatCallDailyPos(List<StatOriginLogDataDto> logDataDtos) {
+    }
+
+    /**
+     * 把StatOriginLogDataDto集合转换为StatCallDailyApiPo集合
+     * @param logDataDtos
+     * @return
+     */
+    public static List<StatCallDailyApiPo> convertToStatCallDailyApiPos(List<StatOriginLogDataDto> logDataDtos) {
+    }
+
+    /**
+     * 把StatOriginLogDataDto集合转换为StatCallPartnerDailyApiPo集合
+     * @param logDataDtos
+     * @return
+     */
+    public static List<StatCallPartnerDailyApiPo> converttoStatCallPartnerDailyApiPos(List<StatOriginLogDataDto> logDataDtos) {
+    }
+
+    /**
+     * 通过request和httpHost解析url
+     * @param request
+     * @param httpHost
+     * @return
+     */
+    private static String resolveUrl(String request,String httpHost){
+        try{
+            //POST /logout/sso/user/v1/userSession HTTP/1.1
+            String[] reqArr = request.split(" ");
+            String apiUrl = String.format(api_url_format,"http://",httpHost,reqArr[1]);
+            return apiUrl;
+        }catch (Exception e){
+            log.error("解析url失败，e:{}",e);
+            return String.format(api_url_format,"http://",httpHost,request);
+        }
+    }
+
+    /**
+     * 是否成功
+     * @param status
+     * @return
+     */
+    private static boolean isSuccessed(String status){
+        if(StringUtils.isBlank(status)){
+            return false;
+        }
+        return "200".equals(status);
     }
 }
