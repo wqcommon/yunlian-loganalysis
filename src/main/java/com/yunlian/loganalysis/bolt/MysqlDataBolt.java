@@ -1,11 +1,20 @@
 package com.yunlian.loganalysis.bolt;
 
+import com.alibaba.fastjson.JSONObject;
+import com.yunlian.loganalysis.dto.StatOriginLogDataDto;
+import com.yunlian.loganalysis.service.LogDataAnalysisService;
+import com.yunlian.loganalysis.util.LogAnalysisConstant;
+import org.apache.storm.shade.org.apache.commons.collections.CollectionUtils;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.tuple.Tuple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sun.rmi.runtime.Log;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,17 +25,33 @@ import java.util.Map;
  */
 public class MysqlDataBolt extends BaseRichBolt{
 
+    private static final Logger log = LoggerFactory.getLogger(MysqlDataBolt.class);
 
     private static final long serialVersionUID = 7224684733827266594L;
 
+    private OutputCollector outputCollector;
+
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+
+        this.outputCollector = outputCollector;
 
     }
 
     @Override
     public void execute(Tuple tuple) {
-
+        String data = (String) tuple.getValueByField(LogAnalysisConstant.FIELD_DATATRANSFER);
+        List<StatOriginLogDataDto> logDataDtos = JSONObject.parseArray(data,StatOriginLogDataDto.class);
+        if(CollectionUtils.isNotEmpty(logDataDtos)){
+            //处理数据入库
+            try {
+                LogDataAnalysisService dataAnalysisService = LogDataAnalysisService.getInstance();
+                dataAnalysisService.statLogData(logDataDtos);
+            }catch (Exception e){
+                log.error("日志统计数据入库失败：e:{}",e);
+            }
+        }
+        outputCollector.ack(tuple);
     }
 
     @Override

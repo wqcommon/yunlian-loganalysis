@@ -67,7 +67,7 @@ public class KafkaDataSpout extends BaseRichSpout{
                         }
                     }
                     String jsonMsg = JSONObject.toJSONString(dataList);
-                    log.info("kafkaSpout发送的数据：{},当前时间：{}",jsonMsg, LocalDateTime.now());
+                    log.info("kafkaSpout发送的数据的长度：{},当前时间：{}",dataList.size(), LocalDateTime.now());
                     spoutOutputCollector.emit(new Values(jsonMsg));
 
                 }else{
