@@ -103,6 +103,13 @@
             <version>1.1.6</version>
         </dependency>
 
+        <!--mybatis使用jdk8新日期格式-->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-typehandlers-jsr310</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
     </dependencies>
 
     <!-- 设定插件仓库 -->

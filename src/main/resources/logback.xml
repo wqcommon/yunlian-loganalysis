@@ -47,7 +47,7 @@
     </appender>
 
     <!--logger用来设置某一个包或具体的某一个类的日志打印级别-->
-    <logger name="com.yunlian.loganalysis" level="INFO" additivity="false">
+    <logger name="com.yunlian.apimonitor" level="INFO" additivity="false">
         <appender-ref ref="infoAppender" />
         <appender-ref ref="errorAppender" />
     </logger>

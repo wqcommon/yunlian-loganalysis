@@ -20,7 +20,10 @@
     </environments>
 
     <mappers>
-        <mapper resource="mappers/TbTestMapper.xml"/>
-        <mapper resource="mappers/TbDemoMapper.xml"/>
+        <mapper resource="mappers/StatCallApiMapper.xml"/>
+        <mapper resource="mappers/StatCallDailyApiMapper.xml"/>
+        <mapper resource="mappers/StatCallDailyMapper.xml"/>
+        <mapper resource="mappers/StatCallPartnerDailyApiMapper.xml"/>
+        <mapper resource="mappers/StatOriginLogDataMapper.xml"/>
     </mappers>
 </configuration>
