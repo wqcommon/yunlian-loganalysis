@@ -4,15 +4,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yunlian.loganalysis.dao.StatCallDailyDao">
 
-    <insert id="insert" parameterType="com.yunlian.loganalysis.po.TbDemoPo">
+
+
+    <insert id="insertBatch" parameterType="java.util.List">
         INSERT INTO tb_demo(address,phone)VALUES
         (
         #{address},
         #{phone}
         )
-        <selectKey keyProperty="id" resultType="int" order="AFTER">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
     </insert>
 
 </mapper>

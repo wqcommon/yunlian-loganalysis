@@ -4,15 +4,61 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yunlian.loganalysis.dao.StatCallApiDao">
 
-    <insert id="insert" parameterType="com.yunlian.loganalysis.po.TbDemoPo">
-        INSERT INTO tb_demo(address,phone)VALUES
-        (
-        #{address},
-        #{phone}
-        )
-        <selectKey keyProperty="id" resultType="int" order="AFTER">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
+    <sql id="resultSql">
+        uid AS uid,
+        api_url AS apiUrl,
+        total_callnum AS totalCallnum,
+        success_callnum AS successCallnum,
+        failure_callnum AS failureCallnum,
+        create_time AS createTime,
+        update_time AS updateTime
+    </sql>
+
+    <sql id="resultExcludeTimeSql">
+        uid AS uid,
+        api_url AS apiUrl,
+        total_callnum AS totalCallnum,
+        success_callnum AS successCallnum,
+        failure_callnum AS failureCallnum
+    </sql>
+
+    <insert id="insertBatch" parameterType="com.yunlian.loganalysis.po.StatCallApiPo">
+        INSERT INTO stat_call_api VALUES
+        <foreach collection="java.util.List" item="data" separator=",">
+            (
+            #{data.uid},
+            #{data.apiUrl},
+            #{data.totalCallnum},
+            #{data.successCallnum},
+            #{data.failureCallnum},
+            now(),
+            now()
+            )
+        </foreach>
     </insert>
+
+    <update id="updateByApiUrl" parameterType="com.yunlian.loganalysis.po.StatCallApiPo">
+        UPDATE stat_call_api SET
+        total_callnum = #{totalCallnum},
+        success_callnum = #{successCallnum},
+        failure_callnum = #{failureCallnum}
+        WHERE uid = #{uid} AND api_url = #{apiUrl}
+    </update>
+
+    <select id="queryExcludeTime" parameterType="java.util.Map" resultType="com.yunlian.loganalysis.po.StatCallApiPo">
+        SELECT
+        <include refid="resultExcludeTimeSql"/>
+        FROM stat_call_api
+        <where>
+
+            <if test="apiUrlList != null">
+                api_url IN
+                <foreach collection="apiUrlList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+
+        </where>
+    </select>
 
 </mapper>
