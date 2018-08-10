@@ -43,8 +43,7 @@ public class DbConfig {
             }
             InputStream is = Resources.getResourceAsStream(MYBATIS_CONFIG_PATH);
             Properties dbProperties = ConfigPropertiesFactory.getDbProperties();
-            String env = dbProperties.getProperty(ConfigPropertiesFactory.ConfigKey.KEY_DB_ENV);
-            sqlSessionFactory = new SqlSessionFactoryBuilder().build(is,env,dbProperties);
+            sqlSessionFactory = new SqlSessionFactoryBuilder().build(is,dbProperties);
         } catch (IOException e) {
             log.error("加载mybatis-config.xml配置文件失败，e:{}",e);
         } finally {

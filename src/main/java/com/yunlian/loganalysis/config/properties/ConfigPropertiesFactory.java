@@ -44,9 +44,6 @@ public class ConfigPropertiesFactory {
 
         //db key
 
-        //环境参数
-        public static final String KEY_DB_ENV = "db.env";
-
         //驱动类
         public static final String KEY_DB_DRIVERCLASSNAME = "db.driverClassName";
         //url
@@ -79,7 +76,6 @@ public class ConfigPropertiesFactory {
 
         try {
             dbProperties.load(dbIs);
-            dbProperties.setProperty(ConfigKey.KEY_DB_ENV,env);
         } catch (IOException e) {
             log.error("db.properties配置文件错误！");
             System.exit(0);

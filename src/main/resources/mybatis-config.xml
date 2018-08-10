@@ -7,8 +7,8 @@
         <typeAlias type="com.yunlian.loganalysis.datasource.DruidDataSourceFacotry" alias="druid" />
     </typeAliases>
 
-    <environments default="local">
-        <environment id="local">
+    <environments default="common">
+        <environment id="common">
             <transactionManager type="JDBC" />
             <dataSource type="druid">
                 <property name="driverClass" value="${db.driverClassName}"/>
