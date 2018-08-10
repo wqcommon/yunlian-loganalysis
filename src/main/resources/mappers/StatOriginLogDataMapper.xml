@@ -4,15 +4,31 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yunlian.loganalysis.dao.StatOriginLogDataDao">
 
-    <insert id="insert" parameterType="com.yunlian.loganalysis.po.TbDemoPo">
-        INSERT INTO tb_demo(address,phone)VALUES
-        (
-        #{address},
-        #{phone}
-        )
-        <selectKey keyProperty="id" resultType="int" order="AFTER">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO stat_origin_logdata VALUES
+        <foreach collection="list" item="data" separator=",">
+          (
+            #{data.uid},
+            #{data.remoteAddr},
+            #{data.remoteUser},
+            #{data.timeLocal},
+            #{data.httpHost},
+            #{data.request},
+            #{data.requestLength},
+            #{data.httpReferer},
+            #{data.upstreamAddr},
+            #{data.status},
+            #{data.requestTime},
+            #{data.upstreamResponseTime},
+            #{data.bodyBytesSent},
+            #{data.httpToken},
+            #{data.httpAppCode},
+            #{data.httpUserAgent},
+            now(),
+            now()
+          )
+        </foreach>
+
     </insert>
 
 </mapper>

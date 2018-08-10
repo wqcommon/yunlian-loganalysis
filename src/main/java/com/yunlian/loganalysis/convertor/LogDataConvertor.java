@@ -7,9 +7,12 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author qiang.wen
@@ -28,6 +31,8 @@ public class LogDataConvertor {
     private static final String http_protol = "HTTP/1.1";
 
     private static final String api_url_format = "%s%s%s";
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z", Locale.US);
 
 
     /**
@@ -144,6 +149,20 @@ public class LogDataConvertor {
      * @return
      */
     public static List<StatCallDailyPo> convertToStatCallDailyPos(List<StatOriginLogDataDto> logDataDtos) {
+        //不生成uid
+        List<StatCallDailyPo> statCallDailyPos = new ArrayList<>();
+        logDataDtos.forEach(dto -> {
+            StatCallDailyPo po = new StatCallDailyPo();
+            po.setStatDate(resolveStatDate(dto.getTimeLocal()));
+            po.setTotalCallnum(1);
+            if(isSuccessed(dto.getStatus())){
+                po.setSuccessCallnum(1);
+            }else {
+                po.setFailureCallnum(1);
+            }
+            statCallDailyPos.add(po);
+        });
+        return statCallDailyPos;
     }
 
     /**
@@ -152,6 +171,24 @@ public class LogDataConvertor {
      * @return
      */
     public static List<StatCallDailyApiPo> convertToStatCallDailyApiPos(List<StatOriginLogDataDto> logDataDtos) {
+        //不生成uid
+        List<StatCallDailyApiPo> statCallDailyApiPos = new ArrayList<>();
+        logDataDtos.forEach(dto -> {
+            StatCallDailyApiPo po = new StatCallDailyApiPo();
+            po.setApiUrl(resolveUrl(dto.getRequest(),dto.getHttpHost()));
+            po.setStatDate(resolveStatDate(dto.getTimeLocal()));
+            po.setTotalCallnum(1);
+            if(isSuccessed(dto.getStatus())){
+                po.setSuccessCallnum(1);
+            }else {
+                po.setFailureCallnum(1);
+            }
+            long reqTime = resolveRequestTime(dto.getRequestTime());
+            po.setMaxResponseTime(reqTime);
+            po.setMinResponseTime(reqTime);
+            statCallDailyApiPos.add(po);
+        });
+        return statCallDailyApiPos;
     }
 
     /**
@@ -160,6 +197,25 @@ public class LogDataConvertor {
      * @return
      */
     public static List<StatCallPartnerDailyApiPo> converttoStatCallPartnerDailyApiPos(List<StatOriginLogDataDto> logDataDtos) {
+        //不生成uid
+        List<StatCallPartnerDailyApiPo> statCallPartnerDailyApiPos = new ArrayList<>();
+        logDataDtos.forEach(dto -> {
+            StatCallPartnerDailyApiPo po = new StatCallPartnerDailyApiPo();
+            po.setAppCode(dto.getHttpAppCode());
+            po.setApiUrl(resolveUrl(dto.getRequest(),dto.getHttpHost()));
+            po.setStatDate(resolveStatDate(dto.getTimeLocal()));
+            po.setTotalCallnum(1);
+            if(isSuccessed(dto.getStatus())){
+                po.setSuccessCallnum(1);
+            }else {
+                po.setFailureCallnum(1);
+            }
+            long reqTime = resolveRequestTime(dto.getRequestTime());
+            po.setMaxResponseTime(reqTime);
+            po.setMinResponseTime(reqTime);
+            statCallPartnerDailyApiPos.add(po);
+        });
+        return statCallPartnerDailyApiPos;
     }
 
     /**
@@ -190,5 +246,37 @@ public class LogDataConvertor {
             return false;
         }
         return "200".equals(status);
+    }
+
+    /**
+     * 解析日期
+     * @param timeLocal
+     * @return
+     */
+    private static LocalDate resolveStatDate(String timeLocal){
+        //08/Aug/2018:19:47:01 +0800
+        try{
+            LocalDateTime dateTime = LocalDateTime.parse(timeLocal,formatter);
+            return dateTime.toLocalDate();
+        }catch (Exception e){
+            log.error("解析日期出错，e:{}",e);
+        }
+        return LocalDate.now();
+    }
+
+    /**
+     * 解析请求时间
+     * @param requestTime
+     * @return
+     */
+    private static long resolveRequestTime(String requestTime){
+        // 0.589s 需要转换为ms
+        try{
+            long reqTime = (long) (Double.valueOf(requestTime) * 1000);
+            return reqTime;
+        }catch (Exception e){
+            log.error("解析请求时间错误，e:{}",e);
+        }
+        return 0;
     }
 }
