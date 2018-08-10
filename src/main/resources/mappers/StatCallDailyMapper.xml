@@ -4,14 +4,60 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yunlian.loganalysis.dao.StatCallDailyDao">
 
+    <sql id="resultSql">
+        uid AS uid,
+        stat_date AS statDate,
+        total_callnum AS totalCallnum,
+        success_callnum AS successCallnum,
+        failure_callnum AS failureCallnum,
+        create_time AS createTime,
+        update_time AS updateTime
+    </sql>
 
+    <sql id="resultExcludeTimeSql">
+        uid AS uid,
+        stat_date AS statDate,
+        total_callnum AS totalCallnum,
+        success_callnum AS successCallnum,
+        failure_callnum AS failureCallnum
+    </sql>
 
     <insert id="insertBatch" parameterType="java.util.List">
-        INSERT INTO tb_demo(address,phone)VALUES
-        (
-        #{address},
-        #{phone}
-        )
+        INSERT INTO stat_call_daily VALUES
+        <foreach collection="list" item ="data" separator=",">
+            (
+            #{data.uid},
+            #{data.statDate},
+            #{data.totalCallnum},
+            #{data.successCallnum},
+            #{data.failureCallnum},
+            now(),
+            now()
+            )
+        </foreach>
     </insert>
 
+    <update id="update" parameterType="com.yunlian.loganalysis.po.StatCallDailyPo">
+        UPDATE stat_call_daily SET
+        total_callnum = #{totalCallnum},
+        success_callnum = #{successCallnum},
+        failure_callnum = #{failureCallnum}
+        WHERE uid = #{uid}
+    </update>
+
+    <select id="queryExcludeTime" parameterType="java.util.Map" resultType="com.yunlian.loganalysis.po.StatCallDailyPo">
+        SELECT
+        <include refid="resultExcludeTimeSql"/>
+        FROM stat_call_api
+        <where>
+
+            <if test="statDateList != null">
+                stat_date IN
+                <foreach collection="statDateList" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+
+        </where>
+    </select>
 </mapper>

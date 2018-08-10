@@ -3,6 +3,7 @@ package com.yunlian.loganalysis.service;
 import com.yunlian.loganalysis.config.DbConfig;
 import com.yunlian.loganalysis.convertor.LogDataConvertor;
 import com.yunlian.loganalysis.dao.StatCallApiDao;
+import com.yunlian.loganalysis.dao.StatCallDailyApiDao;
 import com.yunlian.loganalysis.dao.StatCallDailyDao;
 import com.yunlian.loganalysis.dao.StatOriginLogDataDao;
 import com.yunlian.loganalysis.dto.StatOriginLogDataDto;
@@ -79,12 +80,89 @@ public class LogDataAnalysisService {
 
     }
 
+    /**
+     * 处理每个调用方每天每个api的调用数据
+     * @param sqlSession
+     * @param statCallPartnerDailyApiPos
+     */
     private void handleStatCallPartnerDailyApiData(SqlSession sqlSession, List<StatCallPartnerDailyApiPo> statCallPartnerDailyApiPos) {
+
+        if(CollectionUtils.isEmpty(statCallPartnerDailyApiPos)){
+            return;
+        }
 
     }
 
+    /**
+     * 处理每天每个api的调用数据
+     * @param sqlSession
+     * @param statCallDailyApiPos
+     */
     private void handleStatCallDailyApiData(SqlSession sqlSession, List<StatCallDailyApiPo> statCallDailyApiPos) {
-        
+        if(CollectionUtils.isEmpty(statCallDailyApiPos)){
+            return;
+        }
+        StatCallDailyApiDao statCallDailyApiDao = sqlSession.getMapper(StatCallDailyApiDao.class);
+        //根据statDate和apiUrl分组
+        Map<String,List<StatCallDailyApiPo>> dataMap = statCallDailyApiPos.stream().collect(Collectors.groupingBy(po -> po.getApiUrl() + " _" + po.getStatDate().toString()));
+        //分组进行处理
+        GlobalIdGenerator idGenerator = GlobalIdGenerator.getInstance();
+        //待插入
+        List<StatCallDailyApiPo> needInsertList = new ArrayList<>();
+        //待更新
+        List<StatCallDailyApiPo> needUpdateList = new ArrayList<>();
+        Map<String,Object> queryMap = new HashMap<>(2);
+        for(String key : dataMap.keySet()){
+            List<StatCallDailyApiPo> poList = dataMap.get(key);
+            StatCallDailyApiPo tmpPo = poList.get(0);
+            //根据apiUrl和statDate查询
+            queryMap.put("statDate",tmpPo.getStatDate());
+            queryMap.put("apiUrl",tmpPo.getApiUrl());
+            StatCallDailyApiPo dbPo = statCallDailyApiDao.getByStatDateAndUrl(queryMap);
+            //统计成功失败次数、响应时间
+            long totalNum = 0,successNum = 0, failureNum = 0;
+            long minResponseTime = tmpPo.getMinResponseTime();
+            long maxResponseTime = tmpPo.getMaxResponseTime();
+            for(StatCallDailyApiPo po : poList){
+                totalNum += po.getTotalCallnum();
+                successNum += po.getSuccessCallnum();
+                failureNum += po.getFailureCallnum();
+                if(po.getMinResponseTime() < minResponseTime){
+                    minResponseTime = po.getMinResponseTime();
+                }
+                if(po.getMaxResponseTime() > maxResponseTime){
+                    maxResponseTime = po.getMaxResponseTime();
+                }
+            }
+            if(Objects.isNull(dbPo)){
+                //新增
+                tmpPo.setUid(String.valueOf(idGenerator.nextId()));
+                tmpPo.setTotalCallnum(totalNum);
+                tmpPo.setSuccessCallnum(successNum);
+                tmpPo.setFailureCallnum(failureNum);
+                tmpPo.setMinResponseTime(minResponseTime);
+                tmpPo.setMaxResponseTime(maxResponseTime);
+                needInsertList.add(tmpPo);
+            }else {
+                //更新
+                dbPo.setTotalCallnum(dbPo.getTotalCallnum() + totalNum);
+                dbPo.setSuccessCallnum(dbPo.getSuccessCallnum() + successNum);
+                dbPo.setFailureCallnum(dbPo.getFailureCallnum() + failureNum);
+                if(minResponseTime < dbPo.getMinResponseTime()){
+                    dbPo.setMinResponseTime(minResponseTime);
+                }
+                if(maxResponseTime > dbPo.getMaxResponseTime()){
+                    dbPo.setMaxResponseTime(maxResponseTime);
+                }
+                needUpdateList.add(dbPo);
+            }
+
+        }
+        //db操作
+        statCallDailyApiDao.insertBatch(needInsertList);
+        needUpdateList.forEach(updatePo -> {
+            statCallDailyApiDao.update(updatePo);
+        });
     }
 
     /**
@@ -99,8 +177,53 @@ public class LogDataAnalysisService {
         StatCallDailyDao statCallDailyDao = sqlSession.getMapper(StatCallDailyDao.class);
         //根据statDate分组
         Map<LocalDate,List<StatCallDailyPo>> dataMap = statCallDailyPos.stream().collect(Collectors.groupingBy(po -> po.getStatDate()));
-
-        
+        //根据statDate集合查询记录
+        Set<LocalDate> statDateSet = dataMap.keySet();
+        Map<String,Object> queryMap = new HashMap<>();
+        queryMap.put("statDateList",statDateSet);
+        List<StatCallDailyPo> dbPos = statCallDailyDao.queryExcludeTime(queryMap);
+        Map<LocalDate,StatCallDailyPo> dbPoMap = new HashMap<>();
+        if(CollectionUtils.isNotEmpty(dbPos)){
+            dbPoMap = dbPos.stream().collect(Collectors.toMap(po -> po.getStatDate(),po -> po, (newPo,oldPo) -> newPo ));
+        }
+        //分组进行处理
+        //待插入列表
+        List<StatCallDailyPo> needInsertList = new ArrayList<>();
+        //待更新列表
+        List<StatCallDailyPo> needUpdateList = new ArrayList<>();
+        GlobalIdGenerator idGenerator = GlobalIdGenerator.getInstance();
+        for(LocalDate statDate : statDateSet){
+            StatCallDailyPo po = dbPoMap.get(statDate);
+            List<StatCallDailyPo> poList = dataMap.get(statDate);
+            //统计次数
+            long totalNum = 0,successNum = 0, failureNum = 0;
+            for (StatCallDailyPo dailyPo : poList){
+                totalNum += dailyPo.getTotalCallnum();
+                successNum += dailyPo.getSuccessCallnum();
+                failureNum += dailyPo.getFailureCallnum();
+            }
+            if(Objects.isNull(po)){
+                //db中不存在，需要待插入
+                StatCallDailyPo tempPo = poList.get(0);
+                tempPo.setUid(String.valueOf(idGenerator.nextId()));
+                tempPo.setTotalCallnum(totalNum);
+                tempPo.setSuccessCallnum(successNum);
+                tempPo.setFailureCallnum(failureNum);
+                needInsertList.add(tempPo);
+            }else{
+                //db中存在，需要更新
+                po.setTotalCallnum(po.getTotalCallnum() + totalNum);
+                po.setFailureCallnum(po.getFailureCallnum() + failureNum);
+                po.setSuccessCallnum(po.getSuccessCallnum() + successNum);
+                needUpdateList.add(po);
+            }
+        }
+        //新增
+        statCallDailyDao.insertBatch(needInsertList);
+        //更新
+        needUpdateList.forEach(updatePo -> {
+            statCallDailyDao.update(updatePo);
+        });
     }
 
     /**
@@ -160,7 +283,7 @@ public class LogDataAnalysisService {
         statCallApiDao.insertBatch(needInsertList);
         //更新
         needUpdateList.forEach(updatePo -> {
-            statCallApiDao.updateByApiUrl(updatePo);
+            statCallApiDao.update(updatePo);
         });
     }
 

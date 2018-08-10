@@ -4,15 +4,67 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yunlian.loganalysis.dao.StatCallDailyApiDao">
 
-    <insert id="insert" parameterType="com.yunlian.loganalysis.po.TbDemoPo">
-        INSERT INTO tb_demo(address,phone)VALUES
-        (
-        #{address},
-        #{phone}
-        )
-        <selectKey keyProperty="id" resultType="int" order="AFTER">
-            SELECT LAST_INSERT_ID()
-        </selectKey>
+    <sql id="resultSql">
+        uid AS uid,
+        stat_date AS statDate,
+        api_url AS apiUrl,
+        total_callnum AS totalCallnum,
+        success_callnum AS successCallnum,
+        failure_callnum AS failureCallnum,
+        min_response_time AS minResponseTime,
+        max_response_time AS maxResponseTime,
+        create_time AS createTime,
+        update_time AS updateTime
+    </sql>
+
+    <sql id="resultExcludeTimeSql">
+        uid AS uid,
+        stat_date AS statDate,
+        api_url AS apiUrl,
+        total_callnum AS totalCallnum,
+        success_callnum AS successCallnum,
+        failure_callnum AS failureCallnum,
+        min_response_time AS minResponseTime,
+        max_response_time AS maxResponseTime
+    </sql>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO stat_call_daily_api VALUES
+        <foreach collection="list" item="data" separator=",">
+            (
+            #{data.uid},
+            #{data.statDate},
+            #{data.apiUrl},
+            #{data.totalCallnum},
+            #{data.successCallnum},
+            #{data.failureCallnum},
+            #{data.minResponseTime},
+            #{data.maxResponseTime},
+            now(),
+            now()
+            )
+        </foreach>
+
     </insert>
+
+    <update id="update" parameterType="com.yunlian.loganalysis.po.StatCallDailyApiPo">
+
+        UPDATE stat_call_daily_api SET
+        total_callnum = #{totalCallnum},
+        success_callnum = #{successCallnum},
+        failure_callnum = #{failureCallnum},
+        min_response_time = #{minResponseTime},
+        max_response_time = #{maxResponseTime}
+        WHERE uid = #{uid}
+    </update>
+
+    <select id="getByStatDateAndUrl" parameterType="java.util.Map" resultType="com.yunlian.loganalysis.po.StatCallDailyApiPo">
+
+        SELECT
+        <include refid="resultExcludeTimeSql"/>
+        FROM stat_call_daily_api
+        WHERE stat_date = #{statDate} AND api_url = #{apiUrl}
+
+    </select>
 
 </mapper>

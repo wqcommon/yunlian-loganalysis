@@ -24,7 +24,7 @@
 
     <insert id="insertBatch" parameterType="com.yunlian.loganalysis.po.StatCallApiPo">
         INSERT INTO stat_call_api VALUES
-        <foreach collection="java.util.List" item="data" separator=",">
+        <foreach collection="list" item="data" separator=",">
             (
             #{data.uid},
             #{data.apiUrl},
@@ -37,12 +37,12 @@
         </foreach>
     </insert>
 
-    <update id="updateByApiUrl" parameterType="com.yunlian.loganalysis.po.StatCallApiPo">
+    <update id="update" parameterType="com.yunlian.loganalysis.po.StatCallApiPo">
         UPDATE stat_call_api SET
         total_callnum = #{totalCallnum},
         success_callnum = #{successCallnum},
         failure_callnum = #{failureCallnum}
-        WHERE uid = #{uid} AND api_url = #{apiUrl}
+        WHERE uid = #{uid}
     </update>
 
     <select id="queryExcludeTime" parameterType="java.util.Map" resultType="com.yunlian.loganalysis.po.StatCallApiPo">

@@ -15,7 +15,7 @@ public interface StatCallApiDao {
     void insertBatch(List<StatCallApiPo> list);
 
     //根据apiUrl更新记录
-    int updateByApiUrl(StatCallApiPo apiPo);
+    int update(StatCallApiPo apiPo);
 
     //根据查询参数查询排除时间的记录
     List<StatCallApiPo> queryExcludeTime(Map<String,Object> queryMap);
