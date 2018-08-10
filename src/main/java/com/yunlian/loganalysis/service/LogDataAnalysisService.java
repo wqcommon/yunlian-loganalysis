@@ -2,10 +2,7 @@ package com.yunlian.loganalysis.service;
 
 import com.yunlian.loganalysis.config.DbConfig;
 import com.yunlian.loganalysis.convertor.LogDataConvertor;
-import com.yunlian.loganalysis.dao.StatCallApiDao;
-import com.yunlian.loganalysis.dao.StatCallDailyApiDao;
-import com.yunlian.loganalysis.dao.StatCallDailyDao;
-import com.yunlian.loganalysis.dao.StatOriginLogDataDao;
+import com.yunlian.loganalysis.dao.*;
 import com.yunlian.loganalysis.dto.StatOriginLogDataDto;
 import com.yunlian.loganalysis.po.*;
 import com.yunlian.loganalysis.util.GlobalIdGenerator;
@@ -86,10 +83,70 @@ public class LogDataAnalysisService {
      * @param statCallPartnerDailyApiPos
      */
     private void handleStatCallPartnerDailyApiData(SqlSession sqlSession, List<StatCallPartnerDailyApiPo> statCallPartnerDailyApiPos) {
-
         if(CollectionUtils.isEmpty(statCallPartnerDailyApiPos)){
             return;
         }
+        StatCallPartnerDailyApiDao statCallPartnerDailyApiDao = sqlSession.getMapper(StatCallPartnerDailyApiDao.class);
+        //根据appCode、statDate、apiUrl分组
+        Map<String,List<StatCallPartnerDailyApiPo>> dataMap = statCallPartnerDailyApiPos.stream().collect(Collectors.groupingBy(po -> po.getAppCode() +"_" +po.getApiUrl() + " _" + po.getStatDate().toString()));
+        //分组进行处理
+        GlobalIdGenerator idGenerator = GlobalIdGenerator.getInstance();
+        //待插入
+        List<StatCallPartnerDailyApiPo> needInsertList = new ArrayList<>();
+        //待更新
+        List<StatCallPartnerDailyApiPo> needUpdateList = new ArrayList<>();
+        Map<String,Object> queryMap = new HashMap<>(3);
+        for(String key : dataMap.keySet()){
+            List<StatCallPartnerDailyApiPo> poList = dataMap.get(key);
+            StatCallPartnerDailyApiPo tPo = poList.get(0);
+            //根据appCode\apiUrl、statDate查询
+            queryMap.put("appCode",tPo.getAppCode());
+            queryMap.put("statDate",tPo.getStatDate());
+            queryMap.put("apiUrl",tPo.getApiUrl());
+            StatCallPartnerDailyApiPo dbPo = statCallPartnerDailyApiDao.getByAppStatDateAndUrl(queryMap);
+            //统计成功失败次数、响应时间
+            long totalNum = 0,successNum = 0, failureNum = 0;
+            long minResponseTime = tPo.getMinResponseTime();
+            long maxResponseTime = tPo.getMaxResponseTime();
+            for(StatCallPartnerDailyApiPo po : poList){
+                totalNum += po.getTotalCallnum();
+                successNum += po.getSuccessCallnum();
+                failureNum += po.getFailureCallnum();
+                if(po.getMinResponseTime() < minResponseTime){
+                    minResponseTime = po.getMinResponseTime();
+                }
+                if(po.getMaxResponseTime() > maxResponseTime){
+                    maxResponseTime = po.getMaxResponseTime();
+                }
+            }
+            if(Objects.isNull(dbPo)){
+                //新增
+                tPo.setUid(String.valueOf(idGenerator.nextId()));
+                tPo.setTotalCallnum(totalNum);
+                tPo.setSuccessCallnum(successNum);
+                tPo.setFailureCallnum(failureNum);
+                tPo.setMinResponseTime(minResponseTime);
+                tPo.setMaxResponseTime(maxResponseTime);
+                needInsertList.add(tPo);
+            }else {
+                //更新
+                dbPo.setTotalCallnum(dbPo.getTotalCallnum() + totalNum);
+                dbPo.setSuccessCallnum(dbPo.getSuccessCallnum() + successNum);
+                dbPo.setFailureCallnum(dbPo.getFailureCallnum() + failureNum);
+                if(minResponseTime < dbPo.getMinResponseTime()){
+                    dbPo.setMinResponseTime(minResponseTime);
+                }
+                if(maxResponseTime > dbPo.getMaxResponseTime()){
+                    dbPo.setMaxResponseTime(maxResponseTime);
+                }
+                needUpdateList.add(dbPo);
+            }
+        }
+        //db操作
+        statCallPartnerDailyApiDao.insertBatch(needInsertList);
+        needUpdateList.forEach(updatePo -> {
+            statCallPartnerDailyApiDao.update(updatePo);
+        });
 
     }
 
