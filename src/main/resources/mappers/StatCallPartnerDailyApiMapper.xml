@@ -31,7 +31,21 @@
     </sql>
 
     <insert id="insertBatch" parameterType="java.util.List">
-        INSERT INTO stat_call_partner_daily_api VALUES
+        INSERT INTO stat_call_partner_daily_api
+          (
+            uid,
+            appcode,
+            stat_date,
+            api_url,
+            total_callnum,
+            success_callnum,
+            failure_callnum,
+            min_response_time,
+            max_response_time,
+            create_time,
+            update_time
+          )
+        VALUES
         <foreach collection="list" item="data" separator=",">
           (
             #{data.uid},

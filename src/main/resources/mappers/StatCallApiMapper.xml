@@ -10,6 +10,8 @@
         total_callnum AS totalCallnum,
         success_callnum AS successCallnum,
         failure_callnum AS failureCallnum,
+        min_response_time AS minResponseTime,
+        max_response_time AS maxResponseTime,
         create_time AS createTime,
         update_time AS updateTime
     </sql>
@@ -19,11 +21,25 @@
         api_url AS apiUrl,
         total_callnum AS totalCallnum,
         success_callnum AS successCallnum,
-        failure_callnum AS failureCallnum
+        failure_callnum AS failureCallnum,
+        min_response_time AS minResponseTime,
+        max_response_time AS maxResponseTime
     </sql>
 
     <insert id="insertBatch" parameterType="com.yunlian.loganalysis.po.StatCallApiPo">
-        INSERT INTO stat_call_api VALUES
+        INSERT INTO stat_call_api
+          (
+            uid,
+            api_url,
+            total_callnum,
+            success_callnum,
+            failure_callnum,
+            min_response_time,
+            max_response_time,
+            create_time,
+            update_time
+          )
+        VALUES
         <foreach collection="list" item="data" separator=",">
             (
             #{data.uid},
@@ -31,6 +47,8 @@
             #{data.totalCallnum},
             #{data.successCallnum},
             #{data.failureCallnum},
+            #{data.minResponseTime},
+            #{data.maxResponseTime},
             now(),
             now()
             )
@@ -41,7 +59,9 @@
         UPDATE stat_call_api SET
         total_callnum = #{totalCallnum},
         success_callnum = #{successCallnum},
-        failure_callnum = #{failureCallnum}
+        failure_callnum = #{failureCallnum},
+        min_response_time = #{minResponseTime},
+        max_response_time = #{maxResponseTime}
         WHERE uid = #{uid}
     </update>
 

@@ -315,10 +315,18 @@ public class LogDataAnalysisService {
             List<StatCallApiPo> poList = dataMap.get(apiUrl);
             //统计次数
             long totalNum = 0,successNum = 0, failureNum = 0;
+            long minResponseTime = poList.get(0).getMinResponseTime();
+            long maxResponseTime = poList.get(0).getMaxResponseTime();
             for (StatCallApiPo apiPo : poList){
                 totalNum += apiPo.getTotalCallnum();
                 successNum += apiPo.getSuccessCallnum();
                 failureNum += apiPo.getFailureCallnum();
+                if(apiPo.getMinResponseTime() < minResponseTime){
+                    minResponseTime = apiPo.getMinResponseTime();
+                }
+                if(apiPo.getMaxResponseTime() > maxResponseTime){
+                    maxResponseTime = apiPo.getMaxResponseTime();
+                }
             }
             if(Objects.isNull(po)){
                 //db中不存在，需要待插入
@@ -327,12 +335,20 @@ public class LogDataAnalysisService {
                 tempPo.setTotalCallnum(totalNum);
                 tempPo.setSuccessCallnum(successNum);
                 tempPo.setFailureCallnum(failureNum);
+                tempPo.setMinResponseTime(minResponseTime);
+                tempPo.setMaxResponseTime(maxResponseTime);
                 needInsertList.add(tempPo);
             }else{
                 //db中存在，需要更新
                 po.setTotalCallnum(po.getTotalCallnum() + totalNum);
                 po.setFailureCallnum(po.getFailureCallnum() + failureNum);
                 po.setSuccessCallnum(po.getSuccessCallnum() + successNum);
+                if(minResponseTime < po.getMinResponseTime()){
+                    po.setMinResponseTime(minResponseTime);
+                }
+                if(maxResponseTime > po.getMaxResponseTime()){
+                    po.setMaxResponseTime(maxResponseTime);
+                }
                 needUpdateList.add(po);
             }
         }

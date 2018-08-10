@@ -24,6 +24,12 @@ public class StatCallApiPo {
     //失败调用次数
     private long failureCallnum;
 
+    //最小响应时间(ms)
+    private long minResponseTime;
+
+    //最大响应时间(ms)
+    private long maxResponseTime;
+
     //创建时间
     private LocalDateTime createTime;
 
@@ -84,5 +90,21 @@ public class StatCallApiPo {
 
     public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public long getMinResponseTime() {
+        return minResponseTime;
+    }
+
+    public void setMinResponseTime(long minResponseTime) {
+        this.minResponseTime = minResponseTime;
+    }
+
+    public long getMaxResponseTime() {
+        return maxResponseTime;
+    }
+
+    public void setMaxResponseTime(long maxResponseTime) {
+        this.maxResponseTime = maxResponseTime;
     }
 }

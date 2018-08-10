@@ -138,6 +138,9 @@ public class LogDataConvertor {
             }else {
                 po.setFailureCallnum(1);
             }
+            long reqTime = resolveRequestTime(dto.getRequestTime());
+            po.setMaxResponseTime(reqTime);
+            po.setMinResponseTime(reqTime);
             statCallApiPos.add(po);
         });
         return statCallApiPos;
