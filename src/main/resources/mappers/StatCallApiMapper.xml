@@ -28,17 +28,17 @@
 
     <insert id="insertBatch" parameterType="com.yunlian.loganalysis.po.StatCallApiPo">
         INSERT INTO stat_call_api
-          (
-            uid,
-            api_url,
-            total_callnum,
-            success_callnum,
-            failure_callnum,
-            min_response_time,
-            max_response_time,
-            create_time,
-            update_time
-          )
+        (
+        uid,
+        api_url,
+        total_callnum,
+        success_callnum,
+        failure_callnum,
+        min_response_time,
+        max_response_time,
+        create_time,
+        update_time
+        )
         VALUES
         <foreach collection="list" item="data" separator=",">
             (
@@ -70,9 +70,8 @@
         <include refid="resultExcludeTimeSql"/>
         FROM stat_call_api
         <where>
-
             <if test="apiUrlList != null">
-                api_url IN
+                AND api_url IN
                 <foreach collection="apiUrlList" item="item" open="(" separator="," close=")">
                     #{item}
                 </foreach>

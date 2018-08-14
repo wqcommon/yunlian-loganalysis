@@ -3,7 +3,7 @@
 <!--日志配置-->
 <configuration>
     <!--设置上下文名称,每个logger都关联到logger上下文，默认上下文名称为default-->
-    <contextName>apimonitor</contextName>
+    <contextName>loganalysis</contextName>
     <property name="logDir" value="/home/centos/logs/loganalysis"/>
     <property name="backupDir" value="/home/centos/logs/loganalysis/backup"/>
     <!--控制台-->
@@ -47,7 +47,7 @@
     </appender>
 
     <!--logger用来设置某一个包或具体的某一个类的日志打印级别-->
-    <logger name="com.yunlian.apimonitor" level="INFO" additivity="false">
+    <logger name="com.yunlian.loganalysis" level="INFO" additivity="false">
         <appender-ref ref="infoAppender" />
         <appender-ref ref="errorAppender" />
     </logger>

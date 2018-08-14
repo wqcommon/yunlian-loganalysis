@@ -62,7 +62,7 @@
         <where>
 
             <if test="statDateList != null">
-                stat_date IN
+                AND stat_date IN
                 <foreach collection="statDateList" item="item" open="(" separator="," close=")">
                     #{item}
                 </foreach>
