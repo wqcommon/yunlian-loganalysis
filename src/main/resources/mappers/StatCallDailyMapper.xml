@@ -26,7 +26,7 @@
         INSERT INTO stat_call_daily
           (
             uid,
-            api_url,
+            stat_date,
             total_callnum,
             success_callnum,
             failure_callnum,
@@ -58,7 +58,7 @@
     <select id="queryExcludeTime" parameterType="java.util.Map" resultType="com.yunlian.loganalysis.po.StatCallDailyPo">
         SELECT
         <include refid="resultExcludeTimeSql"/>
-        FROM stat_call_api
+        FROM stat_call_daily
         <where>
 
             <if test="statDateList != null">

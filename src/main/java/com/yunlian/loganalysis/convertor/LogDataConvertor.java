@@ -69,11 +69,11 @@ public class LogDataConvertor {
             dataDto.setUpstreamResponseTime(dataArr[10].substring(1));// $upstream_response_time
             dataDto.setBodyBytesSent(dataArr[11].substring(1));// $body_bytes_sent
             String httpToken = dataArr[12].substring(1);// $http_token
-            if(!"null".equals(httpToken)){
+            if(!"null".equals(httpToken) && !"-".equals(httpToken)){
                 dataDto.setHttpToken(httpToken);
             }
             String httpAppCode = dataArr[13].substring(1);// $http_appCode
-            if(!"null".equals(httpAppCode)){
+            if(!"null".equals(httpAppCode) && !"-".equals(httpAppCode)){
                 dataDto.setHttpAppCode(httpAppCode);
             }
             dataDto.setHttpUserAgent(dataArr[14].substring(1));// $http_user_agent

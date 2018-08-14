@@ -26,7 +26,7 @@
         max_response_time AS maxResponseTime
     </sql>
 
-    <insert id="insertBatch" parameterType="com.yunlian.loganalysis.po.StatCallApiPo">
+    <insert id="insertBatch" parameterType="java.util.List">
         INSERT INTO stat_call_api
         (
         uid,
