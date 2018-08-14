@@ -30,6 +30,15 @@ public class DruidDataSourceFacotry implements DataSourceFactory{
         private static final String KEY_URL = "url";
         private static final String KEY_USERNAME = "username";
         private static final String KEY_PASSWORD = "password";
+        private static final String KEY_INITIAL_SIZE = "initialSize";
+        private static final String KEY_MIN_IDLE = "minIdle";
+        private static final String KEY_MAX_ACTIVE = "maxActive";
+        private static final String KEY_MAX_WAIT = "maxWait";
+        private static final String KEY_TEST_ON_BORROW = "testOnBorrow";
+        private static final String KEY_TEST_WHILE_IDLE = "testWhileIdle";
+        private static final String KEY_TIME_BETWEEN_EVICTION_RUNS_MILLIS= "timeBetweenEvictionRunsMillis";
+        private static final String KEY_VALIDATION_QUERY = "validationQuery";
+
     }
 
     @Override
@@ -39,7 +48,14 @@ public class DruidDataSourceFacotry implements DataSourceFactory{
         dataSource.setUrl(properties.getProperty(DBKey.KEY_URL));
         dataSource.setUsername(properties.getProperty(DBKey.KEY_USERNAME));
         dataSource.setPassword(properties.getProperty(DBKey.KEY_PASSWORD));
-        //TODO 设置一些配置参数
+        dataSource.setInitialSize(Integer.parseInt(properties.getProperty(DBKey.KEY_INITIAL_SIZE,"5")));
+        dataSource.setMinIdle(Integer.parseInt(properties.getProperty(DBKey.KEY_MIN_IDLE,"5")));
+        dataSource.setMaxActive(Integer.parseInt(properties.getProperty(DBKey.KEY_MAX_ACTIVE,"20")));
+        dataSource.setMaxWait(Long.parseLong(properties.getProperty(DBKey.KEY_MAX_WAIT,"2000")));
+        dataSource.setTestOnBorrow(Boolean.parseBoolean(properties.getProperty(DBKey.KEY_TEST_ON_BORROW,"true")));
+        dataSource.setTestWhileIdle(Boolean.parseBoolean(properties.getProperty(DBKey.KEY_TEST_WHILE_IDLE,"true")));
+        dataSource.setTimeBetweenEvictionRunsMillis(Long.parseLong(properties.getProperty(DBKey.KEY_TIME_BETWEEN_EVICTION_RUNS_MILLIS,"60000")));
+        dataSource.setValidationQuery(properties.getProperty(DBKey.KEY_VALIDATION_QUERY));
         return dataSource;
     }
 }

@@ -15,6 +15,14 @@
                 <property name="url" value="${db.url}"/>
                 <property name="username" value="${db.username}"/>
                 <property name="password" value="${db.password}"/>
+                <property name="initialSize" value="${db.pool.initialSize}"/>
+                <property name="minIdle" value="${db.pool.minIdle}"/>
+                <property name="maxActive" value="${db.pool.maxActive}"/>
+                <property name="maxWait" value="${db.pool.maxWait}"/>
+                <property name="testOnBorrow" value="${db.pool.testOnBorrow}"/>
+                <property name="testWhileIdle" value="${db.pool.testWhileIdle}"/>
+                <property name="timeBetweenEvictionRunsMillis" value="${db.pool.timeBetweenEvictionRunsMillis}"/>
+                <property name="validationQuery" value="${db.pool.validationQuery}"/>
             </dataSource>
         </environment>
     </environments>

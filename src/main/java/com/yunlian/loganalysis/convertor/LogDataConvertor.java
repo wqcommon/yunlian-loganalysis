@@ -203,20 +203,23 @@ public class LogDataConvertor {
         //不生成uid
         List<StatCallPartnerDailyApiPo> statCallPartnerDailyApiPos = new ArrayList<>();
         logDataDtos.forEach(dto -> {
-            StatCallPartnerDailyApiPo po = new StatCallPartnerDailyApiPo();
-            po.setAppCode(dto.getHttpAppCode());
-            po.setApiUrl(resolveUrl(dto.getRequest(),dto.getHttpHost()));
-            po.setStatDate(resolveStatDate(dto.getTimeLocal()));
-            po.setTotalCallnum(1);
-            if(isSuccessed(dto.getStatus())){
-                po.setSuccessCallnum(1);
-            }else {
-                po.setFailureCallnum(1);
+            //appCode为空不添加进入按调用方统计
+            if(StringUtils.isNotBlank(dto.getHttpAppCode())){
+                StatCallPartnerDailyApiPo po = new StatCallPartnerDailyApiPo();
+                po.setAppCode(dto.getHttpAppCode());
+                po.setApiUrl(resolveUrl(dto.getRequest(),dto.getHttpHost()));
+                po.setStatDate(resolveStatDate(dto.getTimeLocal()));
+                po.setTotalCallnum(1);
+                if(isSuccessed(dto.getStatus())){
+                    po.setSuccessCallnum(1);
+                }else {
+                    po.setFailureCallnum(1);
+                }
+                long reqTime = resolveRequestTime(dto.getRequestTime());
+                po.setMaxResponseTime(reqTime);
+                po.setMinResponseTime(reqTime);
+                statCallPartnerDailyApiPos.add(po);
             }
-            long reqTime = resolveRequestTime(dto.getRequestTime());
-            po.setMaxResponseTime(reqTime);
-            po.setMinResponseTime(reqTime);
-            statCallPartnerDailyApiPos.add(po);
         });
         return statCallPartnerDailyApiPos;
     }

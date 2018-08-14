@@ -42,16 +42,6 @@ public class ConfigPropertiesFactory {
         public static final String KEY_KAFKA_MAX_POLL_RECORDS = "kafka.max.poll.records";
         public static final String KEY_KAFKA_CONSUMER_TOPICS = "kafka.consumer.topics";
 
-        //db key
-
-        //驱动类
-        public static final String KEY_DB_DRIVERCLASSNAME = "db.driverClassName";
-        //url
-        public static final String KEY_DB_URL = "db.url";
-        //用户名
-        public static final String KEY_DB_USERNAME = "db.username";
-        //密码
-        public static final String KEY_DB_PASSWORD = "db.password";
     }
 
     /**

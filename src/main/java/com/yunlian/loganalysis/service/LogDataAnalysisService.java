@@ -143,7 +143,9 @@ public class LogDataAnalysisService {
             }
         }
         //db操作
-        statCallPartnerDailyApiDao.insertBatch(needInsertList);
+        if(CollectionUtils.isNotEmpty(needInsertList)){
+            statCallPartnerDailyApiDao.insertBatch(needInsertList);
+        }
         needUpdateList.forEach(updatePo -> {
             statCallPartnerDailyApiDao.update(updatePo);
         });
@@ -216,7 +218,9 @@ public class LogDataAnalysisService {
 
         }
         //db操作
-        statCallDailyApiDao.insertBatch(needInsertList);
+        if(CollectionUtils.isNotEmpty(needInsertList)){
+            statCallDailyApiDao.insertBatch(needInsertList);
+        }
         needUpdateList.forEach(updatePo -> {
             statCallDailyApiDao.update(updatePo);
         });
@@ -276,7 +280,9 @@ public class LogDataAnalysisService {
             }
         }
         //新增
-        statCallDailyDao.insertBatch(needInsertList);
+        if(CollectionUtils.isNotEmpty(needInsertList)){
+            statCallDailyDao.insertBatch(needInsertList);
+        }
         //更新
         needUpdateList.forEach(updatePo -> {
             statCallDailyDao.update(updatePo);
@@ -353,7 +359,9 @@ public class LogDataAnalysisService {
             }
         }
         //新增
-        statCallApiDao.insertBatch(needInsertList);
+        if(CollectionUtils.isNotEmpty(needInsertList)){
+            statCallApiDao.insertBatch(needInsertList);
+        }
         //更新
         needUpdateList.forEach(updatePo -> {
             statCallApiDao.update(updatePo);
