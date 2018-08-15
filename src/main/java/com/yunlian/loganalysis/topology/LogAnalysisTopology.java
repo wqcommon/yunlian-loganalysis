@@ -33,8 +33,6 @@ public class LogAnalysisTopology {
         }
         //加载配置文件
         String env = args[0];//环境参数
-        ConfigPropertiesFactory.loadProperties(env);
-
         //定义topology以及提交topology
         TopologyBuilder topologyBuilder = new TopologyBuilder();
 

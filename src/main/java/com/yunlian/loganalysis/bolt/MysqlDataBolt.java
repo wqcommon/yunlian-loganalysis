@@ -1,6 +1,7 @@
 package com.yunlian.loganalysis.bolt;
 
 import com.alibaba.fastjson.JSONObject;
+import com.yunlian.loganalysis.config.properties.ConfigPropertiesFactory;
 import com.yunlian.loganalysis.dto.StatOriginLogDataDto;
 import com.yunlian.loganalysis.service.LogDataAnalysisService;
 import com.yunlian.loganalysis.util.LogAnalysisConstant;
@@ -33,7 +34,10 @@ public class MysqlDataBolt extends BaseRichBolt{
 
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
-
+        //环境
+        String env = topologyContext.getThisComponentId().substring(LogAnalysisConstant.MYSQLDATABOLT_PREFIX.length());
+        //加载数据库的配置文件
+        ConfigPropertiesFactory.loadDbProPerties(env);
         this.outputCollector = outputCollector;
 
     }

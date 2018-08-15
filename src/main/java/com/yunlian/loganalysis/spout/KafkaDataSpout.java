@@ -46,7 +46,9 @@ public class KafkaDataSpout extends BaseRichSpout{
     @Override
     public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector) {
         //初始化kafka
-        initKafka();
+        //环境
+        String env = topologyContext.getThisComponentId().substring(LogAnalysisConstant.KAFKASPOUT_PREFIX.length());
+        initKafka(env);
         this.spoutOutputCollector = spoutOutputCollector;
     }
 
@@ -94,13 +96,13 @@ public class KafkaDataSpout extends BaseRichSpout{
     /**
      * 初始化kafka
      */
-    private void initKafka() {
+    private void initKafka(String env) {
         lock.lock();
         try{
             if(Objects.nonNull(kafkaConsumer)){
                 return;
             }
-            KafkaProperties kafkaProperties = ConfigPropertiesFactory.loadKafkaProperties();
+            KafkaProperties kafkaProperties = ConfigPropertiesFactory.loadKafkaProperties(env);
             kafkaConsumer = KafkaConfig.initKafkaConsumer(kafkaProperties);
             //订阅topic
             String consumerTopics = kafkaProperties.getConsumerTopics();
