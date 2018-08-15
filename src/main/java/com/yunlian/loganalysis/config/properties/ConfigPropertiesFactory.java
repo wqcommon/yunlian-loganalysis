@@ -1,10 +1,12 @@
 package com.yunlian.loganalysis.config.properties;
 
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.Properties;
 
 /**
@@ -50,11 +52,13 @@ public class ConfigPropertiesFactory {
      */
     public static void loadProperties(String env) {
         //加载config-xx.properties
+        log.info("加载config.properties配置文件，时间：{}", LocalDateTime.now());
         String configPath = String.format(FORMAT_CONFIGPROPERTIES,env);
         InputStream is = ConfigPropertiesFactory.class.getResourceAsStream(configPath);
         configProperties = new Properties();
         try {
             configProperties.load(is);
+            log.info("config.properties的配置项个数：{}", configProperties.size());
         } catch (IOException e) {
             log.error("加载config.properties配置文件错误！");
             System.exit(0);
@@ -85,6 +89,7 @@ public class ConfigPropertiesFactory {
      * @return
      */
     public static KafkaProperties loadKafkaProperties() {
+        log.info("加载kafkaProperties,时间:{},configProperties的值：{}",LocalDateTime.now(), JSONObject.toJSONString(configProperties));
         KafkaProperties kafkaProperties = new KafkaProperties();
         kafkaProperties.setAutoCommitIntervalMs(Integer.parseInt(configProperties.getProperty(ConfigKey.KEY_KAFKA_AUTO_COMMIT_INTERVAL_MS,"1000")));
         kafkaProperties.setBootstrapServers(configProperties.getProperty(ConfigKey.KEY_KAFKA_BOOTSTRAP_SERVERS));
