@@ -30,7 +30,7 @@ public class LogDataConvertor {
 
     private static final String http_protol = "HTTP/1.1";
 
-    private static final String api_url_format = "%s%s%s";
+//    private static final String api_url_format = "%s%s%s";
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss Z", Locale.US);
 
@@ -131,7 +131,7 @@ public class LogDataConvertor {
         List<StatCallApiPo> statCallApiPos = new ArrayList<>();
         logDataDtos.forEach(dto -> {
             StatCallApiPo po = new StatCallApiPo();
-            po.setApiUrl(resolveUrl(dto.getRequest(),dto.getHttpHost()));
+            po.setApiUrl(resolveUrl(dto.getRequest()));
             po.setTotalCallnum(1);
             if(isSuccessed(dto.getStatus())){
                 po.setSuccessCallnum(1);
@@ -178,7 +178,7 @@ public class LogDataConvertor {
         List<StatCallDailyApiPo> statCallDailyApiPos = new ArrayList<>();
         logDataDtos.forEach(dto -> {
             StatCallDailyApiPo po = new StatCallDailyApiPo();
-            po.setApiUrl(resolveUrl(dto.getRequest(),dto.getHttpHost()));
+            po.setApiUrl(resolveUrl(dto.getRequest()));
             po.setStatDate(resolveStatDate(dto.getTimeLocal()));
             po.setTotalCallnum(1);
             if(isSuccessed(dto.getStatus())){
@@ -207,7 +207,7 @@ public class LogDataConvertor {
             if(StringUtils.isNotBlank(dto.getHttpAppCode())){
                 StatCallPartnerDailyApiPo po = new StatCallPartnerDailyApiPo();
                 po.setAppCode(dto.getHttpAppCode());
-                po.setApiUrl(resolveUrl(dto.getRequest(),dto.getHttpHost()));
+                po.setApiUrl(resolveUrl(dto.getRequest()));
                 po.setStatDate(resolveStatDate(dto.getTimeLocal()));
                 po.setTotalCallnum(1);
                 if(isSuccessed(dto.getStatus())){
@@ -227,18 +227,19 @@ public class LogDataConvertor {
     /**
      * 通过request和httpHost解析url
      * @param request
-     * @param httpHost
      * @return
      */
-    private static String resolveUrl(String request,String httpHost){
+    private static String resolveUrl(String request){
         try{
             //POST /logout/sso/user/v1/userSession HTTP/1.1
             String[] reqArr = request.split(" ");
-            String apiUrl = String.format(api_url_format,"http://",httpHost,reqArr[1]);
+//            String apiUrl = String.format(api_url_format,"http://",httpHost,reqArr[1]);
+            String apiUrl = reqArr[1];
             return apiUrl;
         }catch (Exception e){
             log.error("解析url失败，e:{}",e);
-            return String.format(api_url_format,"http://",httpHost,request);
+//            return String.format(api_url_format,"http://",httpHost,request);
+            return request;
         }
     }
 
