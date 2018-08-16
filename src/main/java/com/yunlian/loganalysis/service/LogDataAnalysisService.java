@@ -130,15 +130,11 @@ public class LogDataAnalysisService {
                 needInsertList.add(tPo);
             }else {
                 //更新
-                dbPo.setTotalCallnum(dbPo.getTotalCallnum() + totalNum);
-                dbPo.setSuccessCallnum(dbPo.getSuccessCallnum() + successNum);
-                dbPo.setFailureCallnum(dbPo.getFailureCallnum() + failureNum);
-                if(minResponseTime < dbPo.getMinResponseTime()){
-                    dbPo.setMinResponseTime(minResponseTime);
-                }
-                if(maxResponseTime > dbPo.getMaxResponseTime()){
-                    dbPo.setMaxResponseTime(maxResponseTime);
-                }
+                dbPo.setTotalCallnum(totalNum);
+                dbPo.setSuccessCallnum(successNum);
+                dbPo.setFailureCallnum(failureNum);
+                dbPo.setMinResponseTime(minResponseTime);
+                dbPo.setMaxResponseTime(maxResponseTime);
                 needUpdateList.add(dbPo);
             }
         }
@@ -204,15 +200,11 @@ public class LogDataAnalysisService {
                 needInsertList.add(tmpPo);
             }else {
                 //更新
-                dbPo.setTotalCallnum(dbPo.getTotalCallnum() + totalNum);
-                dbPo.setSuccessCallnum(dbPo.getSuccessCallnum() + successNum);
-                dbPo.setFailureCallnum(dbPo.getFailureCallnum() + failureNum);
-                if(minResponseTime < dbPo.getMinResponseTime()){
-                    dbPo.setMinResponseTime(minResponseTime);
-                }
-                if(maxResponseTime > dbPo.getMaxResponseTime()){
-                    dbPo.setMaxResponseTime(maxResponseTime);
-                }
+                dbPo.setTotalCallnum(totalNum);
+                dbPo.setSuccessCallnum(successNum);
+                dbPo.setFailureCallnum(failureNum);
+                dbPo.setMinResponseTime(minResponseTime);
+                dbPo.setMaxResponseTime(maxResponseTime);
                 needUpdateList.add(dbPo);
             }
 
@@ -273,9 +265,9 @@ public class LogDataAnalysisService {
                 needInsertList.add(tempPo);
             }else{
                 //db中存在，需要更新
-                po.setTotalCallnum(po.getTotalCallnum() + totalNum);
-                po.setFailureCallnum(po.getFailureCallnum() + failureNum);
-                po.setSuccessCallnum(po.getSuccessCallnum() + successNum);
+                po.setTotalCallnum(totalNum);
+                po.setFailureCallnum(failureNum);
+                po.setSuccessCallnum(successNum);
                 needUpdateList.add(po);
             }
         }
@@ -346,15 +338,11 @@ public class LogDataAnalysisService {
                 needInsertList.add(tempPo);
             }else{
                 //db中存在，需要更新
-                po.setTotalCallnum(po.getTotalCallnum() + totalNum);
-                po.setFailureCallnum(po.getFailureCallnum() + failureNum);
-                po.setSuccessCallnum(po.getSuccessCallnum() + successNum);
-                if(minResponseTime < po.getMinResponseTime()){
-                    po.setMinResponseTime(minResponseTime);
-                }
-                if(maxResponseTime > po.getMaxResponseTime()){
-                    po.setMaxResponseTime(maxResponseTime);
-                }
+                po.setTotalCallnum(totalNum);
+                po.setFailureCallnum(failureNum);
+                po.setSuccessCallnum(successNum);
+                po.setMinResponseTime(minResponseTime);
+                po.setMaxResponseTime(maxResponseTime);
                 needUpdateList.add(po);
             }
         }

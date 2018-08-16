@@ -49,9 +49,9 @@
 
     <update id="update" parameterType="com.yunlian.loganalysis.po.StatCallDailyPo">
         UPDATE stat_call_daily SET
-        total_callnum = #{totalCallnum},
-        success_callnum = #{successCallnum},
-        failure_callnum = #{failureCallnum}
+        total_callnum = total_callnum + #{totalCallnum},
+        success_callnum = success_callnum + #{successCallnum},
+        failure_callnum = failure_callnum + #{failureCallnum}
         WHERE uid = #{uid}
     </update>
 

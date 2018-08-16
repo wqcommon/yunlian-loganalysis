@@ -67,11 +67,11 @@
     <update id="update" parameterType="com.yunlian.loganalysis.po.StatCallPartnerDailyApiPo">
 
         UPDATE stat_call_partner_daily_api SET
-        total_callnum = #{totalCallnum},
-        success_callnum = #{successCallnum},
-        failure_callnum = #{failureCallnum},
-        min_response_time = #{minResponseTime},
-        max_response_time = #{maxResponseTime}
+        total_callnum = total_callnum + #{totalCallnum},
+        success_callnum = success_callnum + #{successCallnum},
+        failure_callnum = failure_callnum + #{failureCallnum},
+        min_response_time = LEAST(min_response_time,#{minResponseTime}),
+        max_response_time = GREATEST(max_response_time,#{maxResponseTime})
         WHERE uid = #{uid}
     </update>
 
