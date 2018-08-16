@@ -42,11 +42,11 @@ public class LogAnalysisTopology {
 
         //定义DataTransferBolt
         String dataTransferBoltId = LogAnalysisConstant.DATATRANSFERBOLT_PREFIX + env;
-        topologyBuilder.setBolt(dataTransferBoltId,new DataTransferBolt(),LogAnalysisConstant.PARALLEL_NUM).shuffleGrouping(kafkaSpoutId);
+        topologyBuilder.setBolt(dataTransferBoltId,new DataTransferBolt(),LogAnalysisConstant.PARALLEL_NUM).setNumTasks(LogAnalysisConstant.TASKS_NUM).shuffleGrouping(kafkaSpoutId);
 
         //定义MysqlDataBolt
         String mysqlDataBoltId = LogAnalysisConstant.MYSQLDATABOLT_PREFIX + env;
-        topologyBuilder.setBolt(mysqlDataBoltId,new MysqlDataBolt(),LogAnalysisConstant.PARALLEL_NUM).shuffleGrouping(dataTransferBoltId);
+        topologyBuilder.setBolt(mysqlDataBoltId,new MysqlDataBolt(),LogAnalysisConstant.PARALLEL_NUM).setNumTasks(LogAnalysisConstant.TASKS_NUM).shuffleGrouping(dataTransferBoltId);
 
         //设置topology在集群运行时的参数
         Config conf = new Config();

@@ -43,27 +43,33 @@ public class DataTransferBolt extends BaseRichBolt{
 
     @Override
     public void execute(Tuple tuple) {
-        //从kafkaSpout中获取信息
-       String originData = (String) tuple.getValueByField(LogAnalysisConstant.FIELD_KAFKAMSG);
-       List<String> originDataList = JSONObject.parseArray(originData,String.class);
-       if (CollectionUtils.isEmpty(originDataList)){
-           return;
-       }
-       log.info("本次待处理的数据条数：{},当前时间：{}",originDataList.size(), LocalDateTime.now());
-        //把信息转换为结构化数据
-       List<StatOriginLogDataDto> originLogDataDtos = new ArrayList<>();
-       originDataList.forEach(data ->{
-            StatOriginLogDataDto dto = LogDataConvertor.convertToStatOriginLogDataDto(data);
-            if(Objects.nonNull(dto)){
-                originLogDataDtos.add(dto);
+        try{
+            //从kafkaSpout中获取信息
+            String originData = (String) tuple.getValueByField(LogAnalysisConstant.FIELD_KAFKAMSG);
+            List<String> originDataList = JSONObject.parseArray(originData,String.class);
+            if (CollectionUtils.isEmpty(originDataList)){
+                return;
             }
-       });
-       log.info("本次转换的数据条数：{}，当前时间：{}",originLogDataDtos.size(),LocalDateTime.now());
-       if(originLogDataDtos.size() > 0){
-           String dtoJsonString = JSONObject.toJSONString(originLogDataDtos);
-           outputCollector.emit(new Values(dtoJsonString));
-       }
-       outputCollector.ack(tuple);
+            log.info("本次待处理的数据条数：{},当前时间：{}",originDataList.size(), LocalDateTime.now());
+            //把信息转换为结构化数据
+            List<StatOriginLogDataDto> originLogDataDtos = new ArrayList<>();
+            originDataList.forEach(data ->{
+                StatOriginLogDataDto dto = LogDataConvertor.convertToStatOriginLogDataDto(data);
+                if(Objects.nonNull(dto)){
+                    originLogDataDtos.add(dto);
+                }
+            });
+            log.info("本次转换的数据条数：{}，当前时间：{}",originLogDataDtos.size(),LocalDateTime.now());
+            if(originLogDataDtos.size() > 0){
+                String dtoJsonString = JSONObject.toJSONString(originLogDataDtos);
+                //发送数据时指定血缘关系(锚点),第一个参数：父tuple，第二个参数：子tuple
+                outputCollector.emit(tuple,new Values(dtoJsonString));
+            }
+            outputCollector.ack(tuple);
+        }catch (Exception e){
+            log.error("转换数据失败，e:{}",e);
+            outputCollector.fail(tuple);
+        }
     }
 
     @Override

@@ -23,10 +23,10 @@ public class LogAnalysisConstant {
     public static final String MYSQLDATABOLT_PREFIX = "mysqlDataBolt_";
 
     //并行数
-    public static final int PARALLEL_NUM = 4;
+    public static final int PARALLEL_NUM = 6;
 
     //任务数
-    public static final int TASKS_NUM = 4;
+    public static final int TASKS_NUM = 6;
 
     //worker数
     public static final int WORKERS_NUM = 6;

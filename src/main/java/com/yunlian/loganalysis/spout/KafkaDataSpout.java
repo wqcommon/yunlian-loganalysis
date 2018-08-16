@@ -94,6 +94,24 @@ public class KafkaDataSpout extends BaseRichSpout{
 
 
     /**
+     * 当tuple处理失败后，Spout调用fail方法
+     * @param msgId
+     */
+    @Override
+    public void fail(Object msgId) {
+       //目前不做任何处理
+    }
+
+    /**
+     * 当tuple处理成功后，Spout调用ack方法
+     * @param msgId
+     */
+    @Override
+    public void ack(Object msgId) {
+        //目前不在任何处理
+    }
+
+    /**
      * 初始化kafka
      */
     private void initKafka(String env) {

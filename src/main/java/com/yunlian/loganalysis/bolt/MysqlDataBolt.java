@@ -51,12 +51,13 @@ public class MysqlDataBolt extends BaseRichBolt{
             try {
                 LogDataAnalysisService dataAnalysisService = LogDataAnalysisService.getInstance();
                 dataAnalysisService.statLogData(logDataDtos);
+                outputCollector.ack(tuple);
             }catch (Exception e){
                 log.error("日志统计数据入库失败：e:{}",e);
+                outputCollector.fail(tuple);
             }
 
         }
-        outputCollector.ack(tuple);
     }
 
     @Override
