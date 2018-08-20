@@ -235,6 +235,9 @@ public class LogDataConvertor {
             String[] reqArr = request.split(" ");
 //            String apiUrl = String.format(api_url_format,"http://",httpHost,reqArr[1]);
             String apiUrl = reqArr[1];
+            if(StringUtils.isNotBlank(apiUrl)){
+                apiUrl = apiUrl.split("\\?")[0];
+            }
             return apiUrl;
         }catch (Exception e){
             log.error("解析url失败，e:{}",e);
