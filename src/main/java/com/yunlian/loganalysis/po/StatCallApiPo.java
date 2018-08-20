@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
  */
 public class StatCallApiPo {
 
+    //主键
+    private int id;
+
     //全局唯一id
     private String uid;
 
@@ -106,5 +109,13 @@ public class StatCallApiPo {
 
     public void setMaxResponseTime(long maxResponseTime) {
         this.maxResponseTime = maxResponseTime;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

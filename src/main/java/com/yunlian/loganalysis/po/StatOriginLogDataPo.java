@@ -10,6 +10,9 @@ import java.time.LocalDateTime;
  */
 public class StatOriginLogDataPo {
 
+    //主键
+    private int id;
+
     //全局id
     private String uid;
 
@@ -207,5 +210,13 @@ public class StatOriginLogDataPo {
 
     public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

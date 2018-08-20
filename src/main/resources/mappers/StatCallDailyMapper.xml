@@ -5,6 +5,7 @@
 <mapper namespace="com.yunlian.loganalysis.dao.StatCallDailyDao">
 
     <sql id="resultSql">
+        id AS id,
         uid AS uid,
         stat_date AS statDate,
         total_callnum AS totalCallnum,
@@ -15,6 +16,7 @@
     </sql>
 
     <sql id="resultExcludeTimeSql">
+        id AS id,
         uid AS uid,
         stat_date AS statDate,
         total_callnum AS totalCallnum,

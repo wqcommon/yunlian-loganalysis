@@ -5,6 +5,7 @@
 <mapper namespace="com.yunlian.loganalysis.dao.StatCallPartnerDailyApiDao">
 
     <sql id="resultSql">
+        id AS id,
         uid AS uid,
         appcode AS appCode,
         stat_date AS statDate,
@@ -19,6 +20,7 @@
     </sql>
 
     <sql id="resultExcludeTimeSql">
+        id AS id,
         uid AS uid,
         appcode AS appCode,
         stat_date AS statDate,

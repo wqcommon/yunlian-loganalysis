@@ -10,6 +10,9 @@ import java.time.LocalDateTime;
  */
 public class StatCallDailyApiPo {
 
+    //主键
+    private int id;
+
     //全局唯一id
     private String uid;
 
@@ -118,5 +121,13 @@ public class StatCallDailyApiPo {
 
     public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
