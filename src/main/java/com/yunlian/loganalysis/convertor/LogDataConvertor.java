@@ -4,6 +4,7 @@ import com.yunlian.loganalysis.dto.StatOriginLogDataDto;
 import com.yunlian.loganalysis.po.*;
 import com.yunlian.loganalysis.util.GlobalIdGenerator;
 import org.apache.commons.lang.StringUtils;
+import org.apache.storm.shade.org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,14 +130,18 @@ public class LogDataConvertor {
     /**
      * 把StatOriginLogDataDto集合转换为StatCallApiPo集合
      * @param logDataDtos
+     * @param apiPathPos
      * @return
      */
-    public static List<StatCallApiPo> convertToStatCallApiPos(List<StatOriginLogDataDto> logDataDtos) {
+    public static List<StatCallApiPo> convertToStatCallApiPos(List<StatOriginLogDataDto> logDataDtos, List<StatSysApiPathPo> apiPathPos) {
         //不生成uid
         List<StatCallApiPo> statCallApiPos = new ArrayList<>();
         logDataDtos.forEach(dto -> {
             StatCallApiPo po = new StatCallApiPo();
-            po.setApiUrl(resolveUrl(dto.getRequest()));
+            //url解析和转换
+            String apiUrl = resolveUrl(dto.getRequest());
+            apiUrl = urlConvert(apiUrl,apiPathPos);
+            po.setApiUrl(apiUrl);
             po.setTotalCallnum(1);
             if(isSuccessed(dto.getStatus())){
                 po.setSuccessCallnum(1);
@@ -150,6 +155,7 @@ public class LogDataConvertor {
         });
         return statCallApiPos;
     }
+
 
     /**
      * 把StatOriginLogDataDto集合转换为StatCallDailyPo集合
@@ -176,14 +182,18 @@ public class LogDataConvertor {
     /**
      * 把StatOriginLogDataDto集合转换为StatCallDailyApiPo集合
      * @param logDataDtos
+     * @param apiPathPos
      * @return
      */
-    public static List<StatCallDailyApiPo> convertToStatCallDailyApiPos(List<StatOriginLogDataDto> logDataDtos) {
+    public static List<StatCallDailyApiPo> convertToStatCallDailyApiPos(List<StatOriginLogDataDto> logDataDtos, List<StatSysApiPathPo> apiPathPos) {
         //不生成uid
         List<StatCallDailyApiPo> statCallDailyApiPos = new ArrayList<>();
         logDataDtos.forEach(dto -> {
             StatCallDailyApiPo po = new StatCallDailyApiPo();
-            po.setApiUrl(resolveUrl(dto.getRequest()));
+            //url解析和转换
+            String apiUrl = resolveUrl(dto.getRequest());
+            apiUrl = urlConvert(apiUrl,apiPathPos);
+            po.setApiUrl(apiUrl);
             po.setStatDate(resolveStatDate(dto.getTimeLocal()));
             po.setTotalCallnum(1);
             if(isSuccessed(dto.getStatus())){
@@ -202,9 +212,10 @@ public class LogDataConvertor {
     /**
      * 把StatOriginLogDataDto集合转换为StatCallPartnerDailyApiPo集合
      * @param logDataDtos
+     * @param apiPathPos
      * @return
      */
-    public static List<StatCallPartnerDailyApiPo> converttoStatCallPartnerDailyApiPos(List<StatOriginLogDataDto> logDataDtos) {
+    public static List<StatCallPartnerDailyApiPo> converttoStatCallPartnerDailyApiPos(List<StatOriginLogDataDto> logDataDtos, List<StatSysApiPathPo> apiPathPos) {
         //不生成uid
         List<StatCallPartnerDailyApiPo> statCallPartnerDailyApiPos = new ArrayList<>();
         logDataDtos.forEach(dto -> {
@@ -212,7 +223,10 @@ public class LogDataConvertor {
             if(StringUtils.isNotBlank(dto.getHttpAppCode())){
                 StatCallPartnerDailyApiPo po = new StatCallPartnerDailyApiPo();
                 po.setAppCode(dto.getHttpAppCode());
-                po.setApiUrl(resolveUrl(dto.getRequest()));
+                //url解析和转换
+                String apiUrl = resolveUrl(dto.getRequest());
+                apiUrl = urlConvert(apiUrl,apiPathPos);
+                po.setApiUrl(apiUrl);
                 po.setStatDate(resolveStatDate(dto.getTimeLocal()));
                 po.setTotalCallnum(1);
                 if(isSuccessed(dto.getStatus())){
@@ -305,5 +319,48 @@ public class LogDataConvertor {
             log.error("解析请求时间错误，e:{}",e);
         }
         return 0;
+    }
+
+    /**
+     * url转换
+     * @param apiUrl
+     * @param apiPathPos
+     * @return
+     */
+    private static String urlConvert(String apiUrl, List<StatSysApiPathPo> apiPathPos) {
+        if(CollectionUtils.isEmpty(apiPathPos)){
+            return apiUrl;
+        }
+        for(StatSysApiPathPo pathPo : apiPathPos){
+            String path = pathPo.getApiPath();
+            if(matchPath(apiUrl,path)){
+                return path;
+            }
+        }
+        return apiUrl;
+    }
+
+    /**
+     * 是否匹配
+     * @param url
+     * @param path
+     * @return
+     */
+    private static boolean matchPath(String url,String path){
+        String[] pathArr = path.split("/");
+        String[] urlArr = url.split("/");
+        if(pathArr.length != urlArr.length){
+            return false;
+        }
+        for(int i = 0; i < pathArr.length ; i++){
+            String pathPart = pathArr[i];
+            String urlPart = urlArr[i];
+            if(pathPart.startsWith("{") && pathPart.endsWith("}") && StringUtils.isEmpty(urlPart)){
+                return false;
+            }else if(!pathPart.equals(urlPart)){
+                return false;
+            }
+        }
+        return true;
     }
 }

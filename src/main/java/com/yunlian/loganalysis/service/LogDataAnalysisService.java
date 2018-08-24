@@ -42,19 +42,22 @@ public class LogDataAnalysisService {
         if(CollectionUtils.isEmpty(logDataDtos)){
             return;
         }
+        //获取SqlSession
+        SqlSession sqlSession = DbConfig.openSqlSession(false);
+        //获取restful路径
+        StatSysApiPathDao statSysApiPathDao = sqlSession.getMapper(StatSysApiPathDao.class);
+        List<StatSysApiPathPo> apiPathPos = statSysApiPathDao.query(Collections.emptyMap());
         /**数据转换*/
         List<StatOriginLogDataPo> originLogDataPos = LogDataConvertor.convertToStatOriginLogDataPos(logDataDtos);
 
-        List<StatCallApiPo> statCallApiPos = LogDataConvertor.convertToStatCallApiPos(logDataDtos);
+        List<StatCallApiPo> statCallApiPos = LogDataConvertor.convertToStatCallApiPos(logDataDtos,apiPathPos);
 
         List<StatCallDailyPo> statCallDailyPos = LogDataConvertor.convertToStatCallDailyPos(logDataDtos);
 
-        List<StatCallDailyApiPo> statCallDailyApiPos = LogDataConvertor.convertToStatCallDailyApiPos(logDataDtos);
+        List<StatCallDailyApiPo> statCallDailyApiPos = LogDataConvertor.convertToStatCallDailyApiPos(logDataDtos,apiPathPos);
 
-        List<StatCallPartnerDailyApiPo> statCallPartnerDailyApiPos = LogDataConvertor.converttoStatCallPartnerDailyApiPos(logDataDtos);
+        List<StatCallPartnerDailyApiPo> statCallPartnerDailyApiPos = LogDataConvertor.converttoStatCallPartnerDailyApiPos(logDataDtos,apiPathPos);
 
-        //获取SqlSession
-        SqlSession sqlSession = DbConfig.openSqlSession(false);
         try{
             /**数据处理*/
             handleOriginLogData(sqlSession,originLogDataPos);

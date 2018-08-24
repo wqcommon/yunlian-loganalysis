@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunlian.loganalysis.dao.StatSysApiPathDao">
+
+    <sql id="resultSql">
+        id AS id,
+        api_path AS apiPath
+    </sql>
+
+    <select id="query" parameterType="java.util.Map" resultType="com.yunlian.loganalysis.po.StatSysApiPathPo">
+        SELECT
+        <include refid="resultSql"/>
+        FROM stat_sys_api_path
+    </select>
+
+</mapper>
