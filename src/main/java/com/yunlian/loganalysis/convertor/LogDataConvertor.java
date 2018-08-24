@@ -55,6 +55,11 @@ public class LogDataConvertor {
             return null;
         }
         try{
+            String status = dataArr[8].substring(1);
+            //404不计入到接口统计中
+            if(is404(status)){
+                return null;
+            }
             StatOriginLogDataDto dataDto = new StatOriginLogDataDto();
             dataDto.setRemoteAddr(dataArr[0].substring(1));// $remote_addr
             dataDto.setRemoteUser(dataArr[1].substring(1));// $remote_user
@@ -256,6 +261,18 @@ public class LogDataConvertor {
             return false;
         }
         return "200".equals(status);
+    }
+
+    /**
+     * 是否为404
+     * @param status
+     * @return
+     */
+    private static boolean is404(String status){
+        if(StringUtils.isBlank(status)){
+            return true;
+        }
+        return "404".equals(status);
     }
 
     /**
