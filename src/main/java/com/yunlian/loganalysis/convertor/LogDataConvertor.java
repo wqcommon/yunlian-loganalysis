@@ -355,8 +355,10 @@ public class LogDataConvertor {
         for(int i = 0; i < pathArr.length ; i++){
             String pathPart = pathArr[i];
             String urlPart = urlArr[i];
-            if(pathPart.startsWith("{") && pathPart.endsWith("}") && StringUtils.isEmpty(urlPart)){
-                return false;
+            if(pathPart.startsWith("{") && pathPart.endsWith("}")){
+                if(StringUtils.isEmpty(urlPart)){
+                    return false;
+                }
             }else if(!pathPart.equals(urlPart)){
                 return false;
             }
