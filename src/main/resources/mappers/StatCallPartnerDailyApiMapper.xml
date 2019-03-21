@@ -15,6 +15,7 @@
         failure_callnum AS failureCallnum,
         min_response_time AS minResponseTime,
         max_response_time AS maxResponseTime,
+        total_response_time AS totalResponseTime,
         create_time AS createTime,
         update_time AS updateTime
     </sql>
@@ -29,7 +30,8 @@
         success_callnum AS successCallnum,
         failure_callnum AS failureCallnum,
         min_response_time AS minResponseTime,
-        max_response_time AS maxResponseTime
+        max_response_time AS maxResponseTime,
+        total_response_time AS totalResponseTime
     </sql>
 
     <insert id="insertBatch" parameterType="java.util.List">
@@ -44,6 +46,7 @@
             failure_callnum,
             min_response_time,
             max_response_time,
+            total_response_time,
             create_time,
             update_time
           )
@@ -59,6 +62,7 @@
             #{data.failureCallnum},
             #{data.minResponseTime},
             #{data.maxResponseTime},
+            #{data.totalResponseTime},
             now(),
             now()
           )
@@ -73,7 +77,8 @@
         success_callnum = success_callnum + #{successCallnum},
         failure_callnum = failure_callnum + #{failureCallnum},
         min_response_time = LEAST(min_response_time,#{minResponseTime}),
-        max_response_time = GREATEST(max_response_time,#{maxResponseTime})
+        max_response_time = GREATEST(max_response_time,#{maxResponseTime}),
+        total_response_time = total_response_time + #{totalResponseTime}
         WHERE uid = #{uid}
     </update>
 

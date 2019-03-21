@@ -40,6 +40,9 @@ public class StatCallPartnerDailyApiPo {
     //最大响应时间(ms)
     private long maxResponseTime;
 
+    //总响应时间(ms)
+    private long totalResponseTime;
+
     //创建时间
     private LocalDateTime createTime;
 
@@ -140,5 +143,13 @@ public class StatCallPartnerDailyApiPo {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public long getTotalResponseTime() {
+        return totalResponseTime;
+    }
+
+    public void setTotalResponseTime(long totalResponseTime) {
+        this.totalResponseTime = totalResponseTime;
     }
 }

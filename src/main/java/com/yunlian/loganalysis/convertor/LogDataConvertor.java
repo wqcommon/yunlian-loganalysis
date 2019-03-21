@@ -142,15 +142,17 @@ public class LogDataConvertor {
             String apiUrl = resolveUrl(dto.getRequest());
             apiUrl = urlConvert(apiUrl,apiPathPos);
             po.setApiUrl(apiUrl);
-            po.setTotalCallnum(1);
-            if(isSuccessed(dto.getStatus())){
-                po.setSuccessCallnum(1);
-            }else {
-                po.setFailureCallnum(1);
-            }
+            //响应时间
             long reqTime = resolveRequestTime(dto.getRequestTime());
             po.setMaxResponseTime(reqTime);
             po.setMinResponseTime(reqTime);
+            po.setTotalCallnum(1);
+            if(isSuccessed(dto.getStatus())){
+                po.setSuccessCallnum(1);
+                po.setTotalResponseTime(reqTime);
+            }else {
+                po.setFailureCallnum(1);
+            }
             statCallApiPos.add(po);
         });
         return statCallApiPos;
@@ -195,15 +197,18 @@ public class LogDataConvertor {
             apiUrl = urlConvert(apiUrl,apiPathPos);
             po.setApiUrl(apiUrl);
             po.setStatDate(resolveStatDate(dto.getTimeLocal()));
-            po.setTotalCallnum(1);
-            if(isSuccessed(dto.getStatus())){
-                po.setSuccessCallnum(1);
-            }else {
-                po.setFailureCallnum(1);
-            }
+            //响应时间
             long reqTime = resolveRequestTime(dto.getRequestTime());
             po.setMaxResponseTime(reqTime);
             po.setMinResponseTime(reqTime);
+            po.setTotalCallnum(1);
+            if(isSuccessed(dto.getStatus())){
+                po.setSuccessCallnum(1);
+                po.setTotalResponseTime(reqTime);
+            }else {
+                po.setFailureCallnum(1);
+            }
+
             statCallDailyApiPos.add(po);
         });
         return statCallDailyApiPos;
@@ -228,15 +233,17 @@ public class LogDataConvertor {
                 apiUrl = urlConvert(apiUrl,apiPathPos);
                 po.setApiUrl(apiUrl);
                 po.setStatDate(resolveStatDate(dto.getTimeLocal()));
+                //响应时间
+                long reqTime = resolveRequestTime(dto.getRequestTime());
+                po.setMaxResponseTime(reqTime);
+                po.setMinResponseTime(reqTime);
                 po.setTotalCallnum(1);
                 if(isSuccessed(dto.getStatus())){
+                    po.setTotalResponseTime(reqTime);
                     po.setSuccessCallnum(1);
                 }else {
                     po.setFailureCallnum(1);
                 }
-                long reqTime = resolveRequestTime(dto.getRequestTime());
-                po.setMaxResponseTime(reqTime);
-                po.setMinResponseTime(reqTime);
                 statCallPartnerDailyApiPos.add(po);
             }
         });

@@ -111,6 +111,7 @@ public class LogDataAnalysisService {
             long totalNum = 0,successNum = 0, failureNum = 0;
             long minResponseTime = tPo.getMinResponseTime();
             long maxResponseTime = tPo.getMaxResponseTime();
+            long totalResponseTime = 0;
             for(StatCallPartnerDailyApiPo po : poList){
                 totalNum += po.getTotalCallnum();
                 successNum += po.getSuccessCallnum();
@@ -121,6 +122,7 @@ public class LogDataAnalysisService {
                 if(po.getMaxResponseTime() > maxResponseTime){
                     maxResponseTime = po.getMaxResponseTime();
                 }
+                totalResponseTime += po.getTotalResponseTime();
             }
             if(Objects.isNull(dbPo)){
                 //新增
@@ -130,6 +132,7 @@ public class LogDataAnalysisService {
                 tPo.setFailureCallnum(failureNum);
                 tPo.setMinResponseTime(minResponseTime);
                 tPo.setMaxResponseTime(maxResponseTime);
+                tPo.setTotalResponseTime(totalResponseTime);
                 needInsertList.add(tPo);
             }else {
                 //更新
@@ -138,6 +141,7 @@ public class LogDataAnalysisService {
                 dbPo.setFailureCallnum(failureNum);
                 dbPo.setMinResponseTime(minResponseTime);
                 dbPo.setMaxResponseTime(maxResponseTime);
+                dbPo.setTotalResponseTime(totalResponseTime);
                 needUpdateList.add(dbPo);
             }
         }
@@ -181,6 +185,7 @@ public class LogDataAnalysisService {
             long totalNum = 0,successNum = 0, failureNum = 0;
             long minResponseTime = tmpPo.getMinResponseTime();
             long maxResponseTime = tmpPo.getMaxResponseTime();
+            long totalResponseTime = 0;
             for(StatCallDailyApiPo po : poList){
                 totalNum += po.getTotalCallnum();
                 successNum += po.getSuccessCallnum();
@@ -191,6 +196,7 @@ public class LogDataAnalysisService {
                 if(po.getMaxResponseTime() > maxResponseTime){
                     maxResponseTime = po.getMaxResponseTime();
                 }
+                totalResponseTime += po.getTotalResponseTime();
             }
             if(Objects.isNull(dbPo)){
                 //新增
@@ -200,6 +206,7 @@ public class LogDataAnalysisService {
                 tmpPo.setFailureCallnum(failureNum);
                 tmpPo.setMinResponseTime(minResponseTime);
                 tmpPo.setMaxResponseTime(maxResponseTime);
+                tmpPo.setTotalResponseTime(totalResponseTime);
                 needInsertList.add(tmpPo);
             }else {
                 //更新
@@ -208,6 +215,7 @@ public class LogDataAnalysisService {
                 dbPo.setFailureCallnum(failureNum);
                 dbPo.setMinResponseTime(minResponseTime);
                 dbPo.setMaxResponseTime(maxResponseTime);
+                dbPo.setTotalResponseTime(totalResponseTime);
                 needUpdateList.add(dbPo);
             }
 
@@ -318,6 +326,7 @@ public class LogDataAnalysisService {
             long totalNum = 0,successNum = 0, failureNum = 0;
             long minResponseTime = poList.get(0).getMinResponseTime();
             long maxResponseTime = poList.get(0).getMaxResponseTime();
+            long totalResponseTime = 0;
             for (StatCallApiPo apiPo : poList){
                 totalNum += apiPo.getTotalCallnum();
                 successNum += apiPo.getSuccessCallnum();
@@ -328,6 +337,7 @@ public class LogDataAnalysisService {
                 if(apiPo.getMaxResponseTime() > maxResponseTime){
                     maxResponseTime = apiPo.getMaxResponseTime();
                 }
+                totalResponseTime += apiPo.getTotalResponseTime();
             }
             if(Objects.isNull(po)){
                 //db中不存在，需要待插入
@@ -338,6 +348,7 @@ public class LogDataAnalysisService {
                 tempPo.setFailureCallnum(failureNum);
                 tempPo.setMinResponseTime(minResponseTime);
                 tempPo.setMaxResponseTime(maxResponseTime);
+                tempPo.setTotalResponseTime(totalResponseTime);
                 needInsertList.add(tempPo);
             }else{
                 //db中存在，需要更新
@@ -346,6 +357,7 @@ public class LogDataAnalysisService {
                 po.setSuccessCallnum(successNum);
                 po.setMinResponseTime(minResponseTime);
                 po.setMaxResponseTime(maxResponseTime);
+                po.setTotalResponseTime(totalResponseTime);
                 needUpdateList.add(po);
             }
         }
